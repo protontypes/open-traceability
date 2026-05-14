@@ -1,0 +1,25 @@
+# JetBrains IDEs
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+config.plist
+*.swp
+
+# Logs and databases
+*.log
+*.sqlite
+
+# Local env files
+.env
+.env.local
+.env.*.local
