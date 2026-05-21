@@ -1,0 +1,120 @@
+{{ define "main" }}
+
+<!-- Hero Section -->
+{{ with hugo.Data.hero }}
+<section class="hero">
+    <div class="container">
+        <h4 style="color: var(--color-primary); margin-bottom: 0.5rem;">{{ .title }}</h4>
+        <h1>{{ .headline | safeHTML }}</h1>
+        <p>{{ .subheadline }}</p>
+        <div style="display: flex; gap: 16px;">
+            <a href="{{ .primary_btn.url }}" class="btn btn-primary">{{ .primary_btn.text }}</a>
+            <a href="{{ .secondary_btn.url }}" class="btn btn-secondary">{{ .secondary_btn.text }}</a>
+        </div>
+    </div>
+</section>
+{{ end }}
+
+<!-- Definition Section -->
+{{ with hugo.Data.definition }}
+<section id="about" style="border-top: none;">
+    <div class="container">
+        <div class="definition-block">
+            "{{ .quote | safeHTML }}"
+        </div>
+    </div>
+</section>
+{{ end }}
+
+<!-- 6 Dimensions Framework -->
+{{ with hugo.Data.framework }}
+<section id="framework" class="section-alt">
+    <div class="container">
+        <div style="margin-bottom: 3rem;">
+            <h2>{{ .title }}</h2>
+            <p style="color: var(--color-text-secondary);">{{ .subtitle }}</p>
+        </div>
+        <div class="grid-3">
+            {{ range .dimensions }}
+            <div class="card" {{ if .highlight }}style="border: 2px solid var(--color-primary);"{{ end }}>
+                <span class="badge" {{ if .highlight }}style="background: var(--color-primary); color: white; border-color: var(--color-primary);"{{ end }}>{{ .id }}</span>
+                <h3>{{ .title }}</h3>
+                <p>{{ .description | safeHTML }}</p>
+            </div>
+            {{ end }}
+        </div>
+    </div>
+</section>
+{{ end }}
+
+<!-- Stakeholders Section -->
+{{ with hugo.Data.stakeholders }}
+<section id="use-cases">
+    <div class="container">
+        <div style="margin-bottom: 3rem;">
+            <h2>{{ .title }}</h2>
+            <p style="color: var(--color-text-secondary);">{{ .subtitle }}</p>
+        </div>
+        <div class="grid-2">
+            {{ range .groups }}
+            <div>
+                <h3>{{ .title }}</h3>
+                <p>{{ .description }}</p>
+            </div>
+            {{ end }}
+        </div>
+    </div>
+</section>
+{{ end }}
+
+<!-- Assessment Architecture -->
+{{ with hugo.Data.architecture }}
+<section class="section-alt">
+    <div class="container">
+        <div style="text-align: center; margin-bottom: 3rem;">
+            <h2>{{ .title }}</h2>
+            <p style="color: var(--color-text-secondary);">{{ .subtitle }}</p>
+        </div>
+        <div class="grid-3">
+            {{ range .partners }}
+            <div class="card" style="text-align: center;">
+                <h4 style="color: var(--color-primary); margin-bottom: 12px;">{{ .name }}</h4>
+                <p style="font-size: 13px;">{{ .description }}</p>
+            </div>
+            {{ end }}
+        </div>
+        {{ with .ai_assistant }}
+        <div style="margin-top: 40px; padding: 32px; border: 1px solid var(--color-border); background: white; border-radius: 8px;">
+            <div style="display: flex; gap: 24px; align-items: center;">
+                <div style="font-family: var(--font-heading); font-weight: 700; color: var(--color-primary);">{{ .label }}</div>
+                <div style="color: var(--color-text-secondary);">{{ .description }}</div>
+            </div>
+        </div>
+        {{ end }}
+    </div>
+</section>
+{{ end }}
+
+<!-- Exemplars -->
+{{ with hugo.Data.exemplars }}
+<section style="border-bottom: none;">
+    <div class="container">
+        <div style="margin-bottom: 3rem;">
+            <h2>{{ .title }}</h2>
+            <p style="color: var(--color-text-secondary);">{{ .subtitle }}</p>
+        </div>
+        <div class="grid-3">
+            {{ range .items }}
+            <div class="card">
+                <h3>{{ .title }}</h3>
+                <p style="font-size: 13px; color: var(--color-text-secondary); margin-bottom: 1rem;">{{ .category }}</p>
+                <p>{{ .description }}</p>
+                <a href="{{ .url }}" style="font-size: 12px; color: var(--color-primary); font-family: var(--font-heading); font-weight: 700; text-decoration: none;">VIEW CASE STUDY →</a>
+            </div>
+            {{ end }}
+        </div>
+    </div>
+</section>
+{{ end }}
+
+{{ end }}
