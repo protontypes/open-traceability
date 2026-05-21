@@ -1,0 +1,12 @@
+title: "Assessment Architecture"
+subtitle: "Leveraging open digital infrastructure for verification."
+partners:
+  - name: "OpenAlex"
+    description: "Mapping the publication layer and citation networks."
+  - name: "ecosyste.ms"
+    description: "Analyzing software metadata and project infrastructure."
+  - name: "OpenSustain.tech"
+    description: "The underlying catalog of open sustainability technology."
+ai_assistant:
+  label: "AI ASSISTANT"
+  description: "The LLM assistant identifies candidate claims, surfaces artifacts, and summarizes likely gaps for human review, enabling scalable assessment."

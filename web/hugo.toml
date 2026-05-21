@@ -1,0 +1,5 @@
+baseURL = 'https://open-traceability.org/'
+locale = 'en-us'
+title = 'Open Traceability'
+disableKinds = ["taxonomy", "term"]
+theme = []

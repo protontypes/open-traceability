@@ -1,0 +1,11 @@
+title: "Stakeholder Perspectives"
+subtitle: "How Open Traceability serves different actors in the ecosystem."
+groups:
+  - title: "For Policymakers"
+    description: "Strengthen regulatory impact assessments and international negotiations with evidence-based authority. Ensure technical claims translated into public policy are accountable."
+  - title: "For Funders"
+    description: "Improve due diligence and impact verification. Use standardized traceability profiles to evaluate the robustness of projects before committing capital."
+  - title: "For Journalists"
+    description: "Verify technical claims in sustainability reporting. Access clear evidentiary links to source data and models to ensure accuracy in communication."
+  - title: "For Developers"
+    description: "Build maintainable and transparent sustainability software. Align workflows with the framework to signal quality and foster collaboration."

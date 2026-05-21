@@ -14,6 +14,7 @@ Icon?
 .Trashes
 config.plist
 *.swp
+ctx/
 
 # Logs and databases
 *.log
@@ -23,3 +24,7 @@ config.plist
 .env
 .env.local
 .env.*.local
+
+# Hugo
+web/public/
+web/resources/
