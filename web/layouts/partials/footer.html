@@ -1,7 +1,13 @@
 <footer>
     <div class="container footer-inner">
-        <div>
-            <p style="font-family: var(--font-heading); font-weight: 700; font-size: 14px; margin-bottom: 4px; color: var(--color-text);">OPEN TRACEABILITY</p>
+        <div class="footer-logo-section">
+            <a href="/" class="logo">
+                {{ $logo := resources.Get "images/logo.png" }}
+                {{ if $logo }}
+                    <img src="{{ $logo.RelPermalink }}" alt="Open Traceability Logo">
+                {{ end }}
+                <span>OPEN TRACEABILITY</span>
+            </a>
             <p>© 2026. Released under CC BY 4.0.</p>
         </div>
         <div style="display: flex; gap: 24px;">
