@@ -1,11 +1,25 @@
 <header>
     <div class="container header-inner">
-        <a href="/" class="logo">OPEN TRACEABILITY</a>
+        <a href="/" class="logo">
+            {{ $logo := resources.Get "images/logo.png" }}
+            {{ if $logo }}
+                <img src="{{ $logo.RelPermalink }}" alt="Open Traceability Logo">
+            {{ end }}
+            <span>OPEN TRACEABILITY</span>
+        </a>
+
+        <input type="checkbox" id="nav-toggle" class="nav-toggle">
+        <label for="nav-toggle" class="nav-toggle-label">
+            <span></span>
+        </label>
+
         <nav>
             <a href="#about">About</a>
             <a href="#framework">Framework</a>
             <a href="#use-cases">Use Cases</a>
-            <a href="https://github.com/protontypes/open-traceability" style="color: var(--color-primary); font-weight: 700;">GitHub</a>
+            <a href="https://github.com/protontypes/open-traceability" class="nav-github" aria-label="GitHub">
+                <i class="fa-brands fa-github"></i>
+            </a>
         </nav>
     </div>
 </header>
