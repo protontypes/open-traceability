@@ -13,6 +13,7 @@ A framework that enables consistent assessment across environmental claims by br
   - `content/`: Page content (Markdown)
   - `data/`: Structured data (YAML) used throughout the site
 - `assets/`: Shared images, icons, and infographics
+- `model/`: Underlying model, ontologies and knowledge graph building 
 
 ## Running the Website
 

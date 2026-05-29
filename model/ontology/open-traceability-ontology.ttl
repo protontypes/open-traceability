@@ -1,0 +1,859 @@
+@prefix : <http://purl.org/open-traceability/ontology#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix schema: <https://schema.org/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+
+#################################################################
+# Ontology Metadata
+#################################################################
+: a owl:Ontology ;
+    rdfs:label "Open Traceability Ontology"@en ;
+    rdfs:comment "A formal ontology for Open Traceability, enabling the externally inspectable connection between environmental claims and their supporting evidence, methods, executions, reviews, and publications. Aligns with PROV-O, Schema.org, and Dublin Core."@en ;
+    dc:creator "Pierre Vogler-Finck" ;
+    dc:date "2026-05-29"^^xsd:date ;
+    owl:versionInfo "1.0.0" ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    owl:imports prov: .
+
+#################################################################
+# Classes
+#################################################################
+
+## Core Entities (Dimensions 1-6)
+:EnvironmentalClaim a owl:Class ;
+    rdfs:label "Environmental Claim"@en ;
+    rdfs:comment "Any statement about environmental state, impact, change, risk, performance, attribution, history, or forecast."@en ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:isDefinedBy : .
+
+:Evidence a owl:Class ;
+    rdfs:label "Evidence"@en ;
+    rdfs:comment "Input data, measurements, or derived data supporting or refuting a claim (Dimension 1)."@en ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:isDefinedBy : .
+
+:Method a owl:Class ;
+    rdfs:label "Method"@en ;
+    rdfs:comment "Analytical logic, models, or algorithms (Dimension 2)."@en ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:isDefinedBy : .
+
+:Software a owl:Class ;
+    rdfs:label "Software"@en ;
+    rdfs:comment "Computer programs or tools implementing methods (Dimension 2)."@en ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:isDefinedBy : .
+
+:Execution a owl:Class ;
+    rdfs:label "Execution"@en ;
+    rdfs:comment "Computational process or workflow run (Dimension 3)."@en ;
+    rdfs:subClassOf prov:Activity ;
+    rdfs:isDefinedBy : .
+
+:Publication a owl:Class ;
+    rdfs:label "Publication"@en ;
+    rdfs:comment "Reports, papers, dashboards, or policy outputs (Dimension 5)."@en ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:isDefinedBy : .
+
+:Review a owl:Class ;
+    rdfs:label "Review"@en ;
+    rdfs:comment "Critique, evaluation, or validation process (Dimension 4)."@en ;
+    rdfs:subClassOf prov:Activity ;
+    rdfs:isDefinedBy : .
+
+:Agent a owl:Class ;
+    rdfs:label "Agent"@en ;
+    rdfs:comment "Organization, individual, or community involved in traceability."@en ;
+    rdfs:subClassOf prov:Agent ;
+    rdfs:isDefinedBy : .
+
+## Supporting Entities
+:Workflow a owl:Class ;
+    rdfs:label "Workflow"@en ;
+    rdfs:comment "Defined sequence of steps for computational tasks."@en ;
+    rdfs:subClassOf prov:Plan ;
+    rdfs:isDefinedBy : .
+
+:Parameter a owl:Class ;
+    rdfs:label "Parameter"@en ;
+    rdfs:comment "Variable or setting used in methods/executions."@en ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:isDefinedBy : .
+
+:Output a owl:Class ;
+    rdfs:label "Output"@en ;
+    rdfs:comment "Results or artifacts produced by an execution."@en ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:isDefinedBy : .
+
+:Issue a owl:Class ;
+    rdfs:label "Issue"@en ;
+    rdfs:comment "Reported problem or critique (Dimension 4)."@en ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:isDefinedBy : .
+
+:Correction a owl:Class ;
+    rdfs:label "Correction"@en ;
+    rdfs:comment "Modification to address errors or updates."@en ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:isDefinedBy : .
+
+:License a owl:Class ;
+    rdfs:label "License"@en ;
+    rdfs:comment "Legal terms for use/reuse of an entity."@en ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:isDefinedBy : .
+
+:ComputationalEnvironment a owl:Class ;
+    rdfs:label "Computational Environment"@en ;
+    rdfs:comment "Hardware/software environment for executions."@en ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:isDefinedBy : .
+
+:Assumption a owl:Class ;
+    rdfs:label "Assumption"@en ;
+    rdfs:comment "Premise taken for granted in a claim or method."@en ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:isDefinedBy : .
+
+:Uncertainty a owl:Class ;
+    rdfs:label "Uncertainty"@en ;
+    rdfs:comment "Measure of doubt/variability in evidence or claims."@en ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:isDefinedBy : .
+
+:QualityControl a owl:Class ;
+    rdfs:label "Quality Control"@en ;
+    rdfs:comment "Process to ensure accuracy/precision of evidence."@en ;
+    rdfs:subClassOf prov:Activity ;
+    rdfs:isDefinedBy : .
+
+:Transformation a owl:Class ;
+    rdfs:label "Transformation"@en ;
+    rdfs:comment "Process converting input evidence to derived evidence."@en ;
+    rdfs:subClassOf prov:Activity ;
+    rdfs:isDefinedBy : .
+
+:Source a owl:Class ;
+    rdfs:label "Source"@en ;
+    rdfs:comment "Origin or provider of evidence (e.g., sensor, database)."@en ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:isDefinedBy : .
+
+#################################################################
+# Object Properties (Relationships)
+#################################################################
+
+## Core Traceability (Dimensions 1-6)
+:supports a owl:ObjectProperty ;
+    rdfs:label "supports"@en ;
+    rdfs:comment "Evidence underpins or validates a claim."@en ;
+    rdfs:domain :Evidence ;
+    rdfs:range :EnvironmentalClaim ;
+    rdfs:subPropertyOf prov:wasDerivedFrom ;
+    rdfs:isDefinedBy : .
+
+:based_on a owl:ObjectProperty ;
+    rdfs:label "based on"@en ;
+    rdfs:comment "Claim relies on specific evidence."@en ;
+    rdfs:domain :EnvironmentalClaim ;
+    rdfs:range :Evidence ;
+    rdfs:subPropertyOf prov:wasDerivedFrom ;
+    owl:inverseOf :supports ;
+    rdfs:isDefinedBy : .
+
+:uses a owl:ObjectProperty ;
+    rdfs:label "uses"@en ;
+    rdfs:comment "Method consumes evidence as input."@en ;
+    rdfs:domain :Method ;
+    rdfs:range :Evidence ;
+    rdfs:subPropertyOf prov:used ;
+    rdfs:isDefinedBy : .
+
+:applies a owl:ObjectProperty ;
+    rdfs:label "applies"@en ;
+    rdfs:comment "Execution runs a specific method."@en ;
+    rdfs:domain :Execution ;
+    rdfs:range :Method ;
+    rdfs:subPropertyOf prov:used ;
+    rdfs:isDefinedBy : .
+
+:uses_input a owl:ObjectProperty ;
+    rdfs:label "uses input"@en ;
+    rdfs:comment "Execution ingests evidence."@en ;
+    rdfs:domain :Execution ;
+    rdfs:range :Evidence ;
+    rdfs:subPropertyOf prov:used ;
+    rdfs:isDefinedBy : .
+
+:produces a owl:ObjectProperty ;
+    rdfs:label "produces"@en ;
+    rdfs:comment "Execution generates output/evidence."@en ;
+    rdfs:domain :Execution ;
+    rdfs:range [ owl:unionOf (:Output :Evidence) ] ;
+    rdfs:subPropertyOf prov:wasGeneratedBy ;
+    rdfs:isDefinedBy : .
+
+:derived_from a owl:ObjectProperty ;
+    rdfs:label "derived from"@en ;
+    rdfs:comment "Evidence is transformed from another."@en ;
+    rdfs:domain :Evidence ;
+    rdfs:range :Evidence ;
+    rdfs:subPropertyOf prov:wasDerivedFrom ;
+    rdfs:isDefinedBy : .
+
+:implements a owl:ObjectProperty ;
+    rdfs:label "implements"@en ;
+    rdfs:comment "Software encodes a method."@en ;
+    rdfs:domain :Software ;
+    rdfs:range :Method ;
+    rdfs:isDefinedBy : .
+
+:depends_on a owl:ObjectProperty ;
+    rdfs:label "depends on"@en ;
+    rdfs:comment "Dependency between methods/software."@en ;
+    rdfs:domain [ owl:unionOf (:Method :Software) ] ;
+    rdfs:range [ owl:unionOf (:Method :Software) ] ;
+    rdfs:subPropertyOf prov:wasInfluencedBy ;
+    rdfs:isDefinedBy : .
+
+:communicates a owl:ObjectProperty ;
+    rdfs:label "communicates"@en ;
+    rdfs:comment "Publication conveys a claim."@en ;
+    rdfs:domain :Publication ;
+    rdfs:range :EnvironmentalClaim ;
+    rdfs:isDefinedBy : .
+
+:describes a owl:ObjectProperty ;
+    rdfs:label "describes"@en ;
+    rdfs:comment "Publication documents a method/execution."@en ;
+    rdfs:domain :Publication ;
+    rdfs:range [ owl:unionOf (:Method :Execution) ] ;
+    rdfs:isDefinedBy : .
+
+:cites a owl:ObjectProperty ;
+    rdfs:label "cites"@en ;
+    rdfs:comment "Publication references an entity."@en ;
+    rdfs:domain :Publication ;
+    rdfs:range [ owl:unionOf (:Evidence :Method :Execution :Review) ] ;
+    rdfs:subPropertyOf schema:citation ;
+    rdfs:isDefinedBy : .
+
+:evaluates a owl:ObjectProperty ;
+    rdfs:label "evaluates"@en ;
+    rdfs:comment "Review assesses an entity."@en ;
+    rdfs:domain :Review ;
+    rdfs:range [ owl:unionOf (:EnvironmentalClaim :Evidence :Method :Execution :Publication) ] ;
+    rdfs:isDefinedBy : .
+
+## Dimension 6: Linkage & Independence
+:links_to a owl:ObjectProperty ;
+    rdfs:label "links to"@en ;
+    rdfs:comment "Explicit, specific, versioned, and externally verifiable linkage between entities (critical for Dimension 6)."@en ;
+    rdfs:domain owl:Thing ;
+    rdfs:range owl:Thing ;
+    rdfs:subPropertyOf prov:wasInfluencedBy ;
+    rdfs:isDefinedBy : .
+
+## Provenance & Integrity
+:originates_from a owl:ObjectProperty ;
+    rdfs:label "originates from"@en ;
+    rdfs:comment "Entity's source of origin."@en ;
+    rdfs:domain [ owl:unionOf (:Evidence :Output) ] ;
+    rdfs:range :Source ;
+    rdfs:subPropertyOf prov:hadPrimarySource ;
+    rdfs:isDefinedBy : .
+
+:created_by a owl:ObjectProperty ;
+    rdfs:label "created by"@en ;
+    rdfs:comment "Agent created the entity."@en ;
+    rdfs:domain owl:Thing ;
+    rdfs:range :Agent ;
+    rdfs:subPropertyOf prov:wasAttributedTo ;
+    rdfs:isDefinedBy : .
+
+:version_of a owl:ObjectProperty ;
+    rdfs:label "version of"@en ;
+    rdfs:comment "Entity is a version of another."@en ;
+    rdfs:domain owl:Thing ;
+    rdfs:range owl:Thing ;
+    rdfs:isDefinedBy : .
+
+:supersedes a owl:ObjectProperty ;
+    rdfs:label "supersedes"@en ;
+    rdfs:comment "Newer entity replaces an older one."@en ;
+    rdfs:domain owl:Thing ;
+    rdfs:range owl:Thing ;
+    owl:inverseOf :is_superseded_by ;
+    rdfs:isDefinedBy : .
+
+:is_superseded_by a owl:ObjectProperty ;
+    rdfs:label "is superseded by"@en ;
+    rdfs:comment "Older entity is replaced by a newer one."@en ;
+    rdfs:domain owl:Thing ;
+    rdfs:range owl:Thing ;
+    rdfs:isDefinedBy : .
+
+## Metadata & Attributes
+:has_assumption a owl:ObjectProperty ;
+    rdfs:label "has assumption"@en ;
+    rdfs:comment "Links a claim/method to its assumptions."@en ;
+    rdfs:domain [ owl:unionOf (:EnvironmentalClaim :Method) ] ;
+    rdfs:range :Assumption ;
+    rdfs:isDefinedBy : .
+
+:has_uncertainty a owl:ObjectProperty ;
+    rdfs:label "has uncertainty"@en ;
+    rdfs:comment "Links evidence/claim to its uncertainty."@en ;
+    rdfs:domain [ owl:unionOf (:Evidence :EnvironmentalClaim) ] ;
+    rdfs:range :Uncertainty ;
+    rdfs:isDefinedBy : .
+
+:has_quality_control a owl:ObjectProperty ;
+    rdfs:label "has quality control"@en ;
+    rdfs:comment "Links evidence to its quality control."@en ;
+    rdfs:domain :Evidence ;
+    rdfs:range :QualityControl ;
+    rdfs:isDefinedBy : .
+
+:has_transformation a owl:ObjectProperty ;
+    rdfs:label "has transformation"@en ;
+    rdfs:comment "Links evidence to its transformation process."@en ;
+    rdfs:domain :Evidence ;
+    rdfs:range :Transformation ;
+    rdfs:isDefinedBy : .
+
+:runs_in a owl:ObjectProperty ;
+    rdfs:label "runs in"@en ;
+    rdfs:comment "Links execution to its computational environment."@en ;
+    rdfs:domain :Execution ;
+    rdfs:range :ComputationalEnvironment ;
+    rdfs:isDefinedBy : .
+
+:uses_parameter a owl:ObjectProperty ;
+    rdfs:label "uses parameter"@en ;
+    rdfs:comment "Links execution/method to a parameter."@en ;
+    rdfs:domain [ owl:unionOf (:Execution :Method) ] ;
+    rdfs:range :Parameter ;
+    rdfs:isDefinedBy : .
+
+:licensed_under a owl:ObjectProperty ;
+    rdfs:label "licensed under"@en ;
+    rdfs:comment "Links entity to its license."@en ;
+    rdfs:domain owl:Thing ;
+    rdfs:range :License ;
+    rdfs:subPropertyOf schema:license ;
+    rdfs:isDefinedBy : .
+
+## Community & Review
+:has_issue a owl:ObjectProperty ;
+    rdfs:label "has issue"@en ;
+    rdfs:comment "Links entity to an issue."@en ;
+    rdfs:domain owl:Thing ;
+    rdfs:range :Issue ;
+    rdfs:isDefinedBy : .
+
+:has_correction a owl:ObjectProperty ;
+    rdfs:label "has correction"@en ;
+    rdfs:comment "Links entity to a correction."@en ;
+    rdfs:domain owl:Thing ;
+    rdfs:range :Correction ;
+    rdfs:isDefinedBy : .
+
+:responds_to a owl:ObjectProperty ;
+    rdfs:label "responds to"@en ;
+    rdfs:comment "Links review/response to an issue."@en ;
+    rdfs:domain [ owl:unionOf (:Review :Correction) ] ;
+    rdfs:range :Issue ;
+    rdfs:isDefinedBy : .
+
+:challenges a owl:ObjectProperty ;
+    rdfs:label "challenges"@en ;
+    rdfs:comment "Links review to an entity it disputes."@en ;
+    rdfs:domain :Review ;
+    rdfs:range [ owl:unionOf (:EnvironmentalClaim :Evidence :Method) ] ;
+    rdfs:isDefinedBy : .
+
+:replicates a owl:ObjectProperty ;
+    rdfs:label "replicates"@en ;
+    rdfs:comment "Links execution to another it reproduces."@en ;
+    rdfs:domain :Execution ;
+    rdfs:range :Execution ;
+    rdfs:isDefinedBy : .
+
+#################################################################
+# Data Properties (Attributes)
+#################################################################
+
+## Environmental Claim
+:claim_id a owl:DatatypeProperty ;
+    rdfs:label "claim ID"@en ;
+    rdfs:comment "Unique identifier for the claim."@en ;
+    rdfs:domain :EnvironmentalClaim ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:statement a owl:DatatypeProperty ;
+    rdfs:label "statement"@en ;
+    rdfs:comment "Textual statement of the claim."@en ;
+    rdfs:domain :EnvironmentalClaim ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:claim_type a owl:DatatypeProperty ;
+    rdfs:label "claim type"@en ;
+    rdfs:comment "Type of claim (state, impact, change, risk, performance, attribution, history, forecast)."@en ;
+    rdfs:domain :EnvironmentalClaim ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:scope a owl:DatatypeProperty ;
+    rdfs:label "scope"@en ;
+    rdfs:comment "Geographic/temporal scope of the claim."@en ;
+    rdfs:domain :EnvironmentalClaim ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:limitations a owl:DatatypeProperty ;
+    rdfs:label "limitations"@en ;
+    rdfs:comment "Limitations or caveats of the claim."@en ;
+    rdfs:domain :EnvironmentalClaim ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:confidence_level a owl:DatatypeProperty ;
+    rdfs:label "confidence level"@en ;
+    rdfs:comment "Confidence level (low, medium, high)."@en ;
+    rdfs:domain :EnvironmentalClaim ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+## Evidence
+:evidence_type a owl:DatatypeProperty ;
+    rdfs:label "evidence type"@en ;
+    rdfs:comment "Type (raw_measurement, processed_data, derived_data, observation)."@en ;
+    rdfs:domain :Evidence ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:collection_method a owl:DatatypeProperty ;
+    rdfs:label "collection method"@en ;
+    rdfs:comment "Method used to collect the evidence."@en ;
+    rdfs:domain :Evidence ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:measurement_method a owl:DatatypeProperty ;
+    rdfs:label "measurement method"@en ;
+    rdfs:comment "Method used to measure the evidence."@en ;
+    rdfs:domain :Evidence ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:quality_controls a owl:DatatypeProperty ;
+    rdfs:label "quality controls"@en ;
+    rdfs:comment "Quality control measures applied."@en ;
+    rdfs:domain :Evidence ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:reusability_conditions a owl:DatatypeProperty ;
+    rdfs:label "reusability conditions"@en ;
+    rdfs:comment "Conditions for reuse."@en ;
+    rdfs:domain :Evidence ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:verifiability a owl:DatatypeProperty ;
+    rdfs:label "verifiability"@en ;
+    rdfs:comment "Whether the evidence can be externally verified."@en ;
+    rdfs:domain :Evidence ;
+    rdfs:range xsd:boolean ;
+    rdfs:isDefinedBy : .
+
+:is_open a owl:DatatypeProperty ;
+    rdfs:label "is open"@en ;
+    rdfs:comment "Whether the entity is openly accessible."@en ;
+    rdfs:domain [ owl:unionOf (:Evidence :Software :Publication) ] ;
+    rdfs:range xsd:boolean ;
+    rdfs:isDefinedBy : .
+
+## Method/Software
+:purpose a owl:DatatypeProperty ;
+    rdfs:label "purpose"@en ;
+    rdfs:comment "Purpose of the method."@en ;
+    rdfs:domain :Method ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:code_repository_url a owl:DatatypeProperty ;
+    rdfs:label "code repository URL"@en ;
+    rdfs:comment "URL to the code repository."@en ;
+    rdfs:domain [ owl:unionOf (:Method :Software) ] ;
+    rdfs:range xsd:anyURI ;
+    rdfs:isDefinedBy : .
+
+:language a owl:DatatypeProperty ;
+    rdfs:label "language"@en ;
+    rdfs:comment "Programming language of the software."@en ;
+    rdfs:domain :Software ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:is_open_source a owl:DatatypeProperty ;
+    rdfs:label "is open source"@en ;
+    rdfs:comment "Whether the software is open source."@en ;
+    rdfs:domain :Software ;
+    rdfs:range xsd:boolean ;
+    rdfs:isDefinedBy : .
+
+:osi_approved a owl:DatatypeProperty ;
+    rdfs:label "OSI approved"@en ;
+    rdfs:comment "Whether the license is OSI-approved."@en ;
+    rdfs:domain :Software ;
+    rdfs:range xsd:boolean ;
+    rdfs:isDefinedBy : .
+
+## Execution
+:execution_id a owl:DatatypeProperty ;
+    rdfs:label "execution ID"@en ;
+    rdfs:comment "Unique identifier for the execution."@en ;
+    rdfs:domain :Execution ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:workflow_definition a owl:DatatypeProperty ;
+    rdfs:label "workflow definition"@en ;
+    rdfs:comment "Definition of the workflow (e.g., CWL, WDL)."@en ;
+    rdfs:domain :Execution ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:reproducibility_status a owl:DatatypeProperty ;
+    rdfs:label "reproducibility status"@en ;
+    rdfs:comment "Reproducibility status (not_reproducible, reproducible_in_theory, reproducible_in_practice)."@en ;
+    rdfs:domain :Execution ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:infrastructure a owl:DatatypeProperty ;
+    rdfs:label "infrastructure"@en ;
+    rdfs:comment "Computational infrastructure used."@en ;
+    rdfs:domain :Execution ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:duration a owl:DatatypeProperty ;
+    rdfs:label "duration"@en ;
+    rdfs:comment "Duration of the execution."@en ;
+    rdfs:domain :Execution ;
+    rdfs:range xsd:duration ;
+    rdfs:isDefinedBy : .
+
+:resource_usage a owl:DatatypeProperty ;
+    rdfs:label "resource usage"@en ;
+    rdfs:comment "Computational resources used."@en ;
+    rdfs:domain :Execution ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+## Publication
+:publication_type a owl:DatatypeProperty ;
+    rdfs:label "publication type"@en ;
+    rdfs:comment "Type (report, paper, dashboard, policy_output, explanatory_material)."@en ;
+    rdfs:domain :Publication ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:accessibility a owl:DatatypeProperty ;
+    rdfs:label "accessibility"@en ;
+    rdfs:comment "Accessibility (open, restricted, closed)."@en ;
+    rdfs:domain :Publication ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:review_status a owl:DatatypeProperty ;
+    rdfs:label "review status"@en ;
+    rdfs:comment "Review status (not_reviewed, peer_reviewed, community_reviewed)."@en ;
+    rdfs:domain :Publication ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:update_cycle a owl:DatatypeProperty ;
+    rdfs:label "update cycle"@en ;
+    rdfs:comment "Update frequency (e.g., daily, weekly)."@en ;
+    rdfs:domain :Publication ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:data_sources a owl:DatatypeProperty ;
+    rdfs:label "data sources"@en ;
+    rdfs:comment "Data sources used in the publication."@en ;
+    rdfs:domain :Publication ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:indicator_definitions a owl:DatatypeProperty ;
+    rdfs:label "indicator definitions"@en ;
+    rdfs:comment "Definitions of indicators used."@en ;
+    rdfs:domain :Publication ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:url a owl:DatatypeProperty ;
+    rdfs:label "URL"@en ;
+    rdfs:comment "URL of the entity."@en ;
+    rdfs:domain owl:Thing ;
+    rdfs:range xsd:anyURI ;
+    rdfs:isDefinedBy : .
+
+:doi a owl:DatatypeProperty ;
+    rdfs:label "DOI"@en ;
+    rdfs:comment "Digital Object Identifier."@en ;
+    rdfs:domain :Publication ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+## Review
+:review_type a owl:DatatypeProperty ;
+    rdfs:label "review type"@en ;
+    rdfs:comment "Type (peer_review, public_comment, issue, correction, replication)."@en ;
+    rdfs:domain :Review ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:findings a owl:DatatypeProperty ;
+    rdfs:label "findings"@en ;
+    rdfs:comment "Findings or conclusions of the review."@en ;
+    rdfs:domain :Review ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:responses a owl:DatatypeProperty ;
+    rdfs:label "responses"@en ;
+    rdfs:comment "Responses to the review."@en ;
+    rdfs:domain :Review ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:visibility a owl:DatatypeProperty ;
+    rdfs:label "visibility"@en ;
+    rdfs:comment "Visibility (public, private, restricted)."@en ;
+    rdfs:domain :Review ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:severity a owl:DatatypeProperty ;
+    rdfs:label "severity"@en ;
+    rdfs:comment "Severity (low, medium, high, critical)."@en ;
+    rdfs:domain :Review ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:resolution a owl:DatatypeProperty ;
+    rdfs:label "resolution"@en ;
+    rdfs:comment "Resolution or outcome of the review."@en ;
+    rdfs:domain :Review ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+## Agent
+:agent_type a owl:DatatypeProperty ;
+    rdfs:label "agent type"@en ;
+    rdfs:comment "Type (organization, individual, community)."@en ;
+    rdfs:domain :Agent ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:role a owl:DatatypeProperty ;
+    rdfs:label "role"@en ;
+    rdfs:comment "Role (creator, reviewer, publisher, data_provider)."@en ;
+    rdfs:domain :Agent ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:expertise a owl:DatatypeProperty ;
+    rdfs:label "expertise"@en ;
+    rdfs:comment "Expertise or domain knowledge."@en ;
+    rdfs:domain :Agent ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:independence_status a owl:DatatypeProperty ;
+    rdfs:label "independence status"@en ;
+    rdfs:comment "Independence status (independent, affiliated, conflict_of_interest)."@en ;
+    rdfs:domain :Agent ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:contact a owl:DatatypeProperty ;
+    rdfs:label "contact"@en ;
+    rdfs:comment "Contact information."@en ;
+    rdfs:domain :Agent ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:website a owl:DatatypeProperty ;
+    rdfs:label "website"@en ;
+    rdfs:comment "Website URL."@en ;
+    rdfs:domain :Agent ;
+    rdfs:range xsd:anyURI ;
+    rdfs:isDefinedBy : .
+
+## Parameter/Output
+:parameter_value a owl:DatatypeProperty ;
+    rdfs:label "parameter value"@en ;
+    rdfs:comment "Value of the parameter."@en ;
+    rdfs:domain :Parameter ;
+    rdfs:range rdfs:Literal ;
+    rdfs:isDefinedBy : .
+
+:parameter_unit a owl:DatatypeProperty ;
+    rdfs:label "parameter unit"@en ;
+    rdfs:comment "Unit of measurement for the parameter."@en ;
+    rdfs:domain :Parameter ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:output_value a owl:DatatypeProperty ;
+    rdfs:label "output value"@en ;
+    rdfs:comment "Value of the output."@en ;
+    rdfs:domain :Output ;
+    rdfs:range rdfs:Literal ;
+    rdfs:isDefinedBy : .
+
+:output_unit a owl:DatatypeProperty ;
+    rdfs:label "output unit"@en ;
+    rdfs:comment "Unit of measurement for the output."@en ;
+    rdfs:domain :Output ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+## Issue
+:issue_title a owl:DatatypeProperty ;
+    rdfs:label "issue title"@en ;
+    rdfs:comment "Title of the issue."@en ;
+    rdfs:domain :Issue ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:issue_description a owl:DatatypeProperty ;
+    rdfs:label "issue description"@en ;
+    rdfs:comment "Description of the issue."@en ;
+    rdfs:domain :Issue ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:issue_status a owl:DatatypeProperty ;
+    rdfs:label "issue status"@en ;
+    rdfs:comment "Status (open, in_progress, resolved, closed)."@en ;
+    rdfs:domain :Issue ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:issue_priority a owl:DatatypeProperty ;
+    rdfs:label "issue priority"@en ;
+    rdfs:comment "Priority (low, medium, high)."@en ;
+    rdfs:domain :Issue ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+## License
+:license_name a owl:DatatypeProperty ;
+    rdfs:label "license name"@en ;
+    rdfs:comment "Name of the license."@en ;
+    rdfs:domain :License ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:license_type a owl:DatatypeProperty ;
+    rdfs:label "license type"@en ;
+    rdfs:comment "Type (open_source, creative_commons, proprietary)."@en ;
+    rdfs:domain :License ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:license_url a owl:DatatypeProperty ;
+    rdfs:label "license URL"@en ;
+    rdfs:comment "URL to the license text."@en ;
+    rdfs:domain :License ;
+    rdfs:range xsd:anyURI ;
+    rdfs:isDefinedBy : .
+
+## Computational Environment
+:environment_type a owl:DatatypeProperty ;
+    rdfs:label "environment type"@en ;
+    rdfs:comment "Type (container, virtual_machine, cloud)."@en ;
+    rdfs:domain :ComputationalEnvironment ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+## Uncertainty
+:uncertainty_type a owl:DatatypeProperty ;
+    rdfs:label "uncertainty type"@en ;
+    rdfs:comment "Type (measurement, model, scenario)."@en ;
+    rdfs:domain :Uncertainty ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:uncertainty_value a owl:DatatypeProperty ;
+    rdfs:label "uncertainty value"@en ;
+    rdfs:comment "Quantitative value of the uncertainty."@en ;
+    rdfs:domain :Uncertainty ;
+    rdfs:range xsd:decimal ;
+    rdfs:isDefinedBy : .
+
+:uncertainty_unit a owl:DatatypeProperty ;
+    rdfs:label "uncertainty unit"@en ;
+    rdfs:comment "Unit of measurement for the uncertainty."@en ;
+    rdfs:domain :Uncertainty ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+## Quality Control
+:quality_control_type a owl:DatatypeProperty ;
+    rdfs:label "quality control type"@en ;
+    rdfs:comment "Type (calibration, validation, verification, peer_review)."@en ;
+    rdfs:domain :QualityControl ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+:quality_control_result a owl:DatatypeProperty ;
+    rdfs:label "quality control result"@en ;
+    rdfs:comment "Result or outcome of the quality control."@en ;
+    rdfs:domain :QualityControl ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
+
+## Shared Properties (Reusing Standards)
+:timestamp a owl:DatatypeProperty ;
+    rdfs:label "timestamp"@en ;
+    rdfs:comment "Timestamp of the entity (creation, modification, execution)."@en ;
+    rdfs:domain owl:Thing ;
+    rdfs:range xsd:dateTime ;
+    rdfs:subPropertyOf schema:dateModified ;
+    rdfs:isDefinedBy : .
+
+:version a owl:DatatypeProperty ;
+    rdfs:label "version"@en ;
+    rdfs:comment "Version of the entity."@en ;
+    rdfs:domain owl:Thing ;
+    rdfs:range xsd:string ;
+    rdfs:subPropertyOf schema:version ;
+    rdfs:isDefinedBy : .
+
+:status a owl:DatatypeProperty ;
+    rdfs:label "status"@en ;
+    rdfs:comment "Status of the entity (e.g., active, retracted, pending, completed)."@en ;
+    rdfs:domain owl:Thing ;
+    rdfs:range xsd:string ;
+    rdfs:isDefinedBy : .
