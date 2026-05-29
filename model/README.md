@@ -4,8 +4,9 @@ This is a work in progress (based upon [preliminary work in Mistral](https://cha
 
 The envisioned structure is the following:
 
-- `ontology/` contains the [ontology](https://en.wikipedia.org/wiki/Ontology_(information_science)) definition
-- `knowledge_graph/` contains the PoC code to generate knowledge graphs using Python.
+- `ontology/` contains the [ontology](https://en.wikipedia.org/wiki/Ontology_(information_science)) definition,
+- `knowledge_graph/` contains the PoC code to generate knowledge graphs using Python,
+- `prompts/`contains a collection of prompts to carry out LLM interactions aligned with OT.
 
 
 Notes:
