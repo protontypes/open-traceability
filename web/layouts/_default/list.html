@@ -1,0 +1,26 @@
+{{ define "main" }}
+<section class="page-content" style="padding: 80px 0; border-bottom: none;">
+    <div class="container" style="max-width: 800px;">
+           <h4 style="color: var(--color-primary); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.1em;">
+            {{ if .Params.version }}Version {{ .Params.version }}{{ else }}Definition{{ end }}
+        </h4>
+        <h1 style="margin-bottom: 40px;">{{ .Title }}</h1>
+        
+        <div class="content-body" style="font-family: var(--font-body); font-size: 20px; line-height: 1.6; color: var(--color-text);">
+            {{ .Content }}
+        </div>
+        {{ if .Params.version }}
+        <div style="margin-top: 60px; padding-top: 40px; border-top: 1px solid var(--color-border);">
+            <h3 style="margin-bottom: 1rem; font-family: var(--font-heading);">About Versioning</h3>
+            <p style="font-size: 18px; line-height: 1.6; color: var(--color-text); margin-bottom: 1.5rem;">
+                To ensure that citations and assessments remain accurate over time, the Open Traceability Definition is versioned. When citing this definition, please refer to the specific version used.
+            </p>
+            <p style="font-size: 14px; color: var(--color-text-secondary); font-family: var(--font-heading);">
+                This is Open Traceability Definition version {{ .Params.version }}. 
+            </p>
+        </div>
+        {{ end }}
+    </div>
+    
+</section>
+{{ end }}

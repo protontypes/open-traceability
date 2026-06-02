@@ -1,11 +1,11 @@
+
 ---
 title: Open Traceability Definition
-
+version: "1.0"
+date: 2026-05-30
 ---
 
-# Open Traceability Definition
-
- **Open Traceability** is the externally inspectable connection between an environmental claim and the specific evidence, methods, assumptions, computations, review processes, and publications from which that claim was derived. It enables consistent assessment across claim types by breaking the knowledge-creation process into traceability dimensions covering input evidence, methods and software, execution, review, publication, provenance, integrity, and independence. An environmental claim is any statement about environmental state, impact, change, risk, performance, attribution, history or forecast. This enables the origin of the informational flow to be traced. 
+**Open Traceability** is the externally inspectable connection between an environmental claim and the specific evidence, methods, assumptions, computations, review processes, and publications from which that claim was derived. It enables consistent assessment across claim types by breaking the knowledge-creation process into traceability dimensions covering input evidence, methods and software, execution, review, publication, provenance, integrity, and independence. An environmental claim is any statement about environmental state, impact, change, risk, performance, attribution, history or forecast. This enables the origin of the informational flow to be traced. 
 
 This enables consistent assessment across claim types by breaking the knowledge-creation process into traceability dimensions:
 
@@ -18,3 +18,6 @@ This enables consistent assessment across claim types by breaking the knowledge-
 6. **Open Linkage and Independence**: whether the chain of evidence from the knowledge-creation process across open input data and measurement evidence (1), models, methods, or software (2), execution (3), community and review (4), and publication (5) is connected in an explicit, specific, versioned, and externally verifiable way. This includes links between claims and the exact datasets, code versions, model configurations, workflow runs, review records, publications, and supporting documents on which they depend. This dimension is decisive because openness without linkage does not produce traceability. 
 
 Open Traceability does not by itself prove that an environmental claim is correct, unbiased, or scientifically valid. Rather, it makes the basis of the claim inspectable, so that its evidence, assumptions, methods, limitations, uncertainty, and possible errors can be examined by others. A claim can be highly traceable and still be wrong; Open Traceability makes such problems easier to detect, evaluate, and correct. The highest level of Open Traceability is demonstrated where a claim is supported not only by one open and inspectable evidence chain, but by multiple independent publications or analyses that rely on different, independently traceable evidence chains. One or similars claim can be traced via a multitued of different chains of evidence.
+
+
+
