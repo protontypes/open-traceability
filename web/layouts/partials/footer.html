@@ -1,7 +1,7 @@
 <footer>
     <div class="container footer-inner">
         <div class="footer-logo-section">
-            <a href="{{ "/" | relURL }}" class="logo">
+            <a href="{{ "/" | absURL }}" class="logo">
                 {{ $logo := resources.Get "images/logo.png" }}
                 {{ if $logo }}
                     <img src="{{ $logo.RelPermalink }}" alt="Open Traceability Logo">

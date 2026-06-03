@@ -1,6 +1,6 @@
 <header>
     <div class="container header-inner">
-        <a href="{{ "/" | relURL }}" class="logo">
+        <a href="{{ "/" | absURL }}" class="logo">
             {{ $logo := resources.Get "images/logo.png" }}
             {{ if $logo }}
                 <img src="{{ $logo.RelPermalink }}" alt="Open Traceability Logo">
@@ -14,10 +14,10 @@
         </label>
 
         <nav>
-            <a href="{{ "/#about" | relURL }}">About</a>
-            <a href="{{ "/definition" | relURL }}">Definition</a>
-            <a href="{{ "/#framework" | relURL }}">Framework</a>
-            <a href="{{ "/#use-cases" | relURL }}">Use Cases</a>
+            <a href="{{ "/#about" | absURL }}">About</a>
+            <a href="{{ "/definition" | absURL }}">Definition</a>
+            <a href="{{ "/#framework" | absURL }}">Framework</a>
+            <a href="{{ "/#use-cases" | absURL }}">Use Cases</a>
             <a href="https://github.com/protontypes/open-traceability" class="nav-github" aria-label="GitHub">
                 <i class="fa-brands fa-github"></i>
             </a>
