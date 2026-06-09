@@ -17,7 +17,7 @@
 : a owl:Ontology ;
     rdfs:label "Open Traceability Ontology"@en ;
     rdfs:comment "A formal ontology for Open Traceability, enabling the externally inspectable connection between environmental claims and their supporting evidence, methods, executions, reviews, and publications. Aligns with PROV-O, Schema.org, and Dublin Core."@en ;
-    dc:creator "Pierre Vogler-Finck" ;
+    dc:creator "Open Traceability team" ;
     dc:date "2026-05-29"^^xsd:date ;
     owl:versionInfo "1.0.0" ;
     dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
