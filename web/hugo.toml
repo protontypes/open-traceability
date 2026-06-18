@@ -1,5 +1,5 @@
-baseURL = 'https://open-traceability.org/'
+baseURL = 'https://www.open-traceability-initiative.org/'
 locale = 'en-us'
-title = 'Open Traceability'
+title = 'Open Traceability Initiative'
 disableKinds = ["taxonomy", "term"]
 theme = []
