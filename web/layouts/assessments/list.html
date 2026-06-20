@@ -1,0 +1,31 @@
+{{ define "main" }}
+<section class="assessment-hero">
+    <div class="container assessment-shell">
+        <div class="assessment-intro">
+            <p class="eyebrow">Assessment pages</p>
+            <h1>{{ .Title }}</h1>
+            <p class="assessment-lead">{{ .Content | plainify }}</p>
+        </div>
+    </div>
+</section>
+
+{{ with hugo.Data.exemplars }}
+<section class="assessment-grid-section">
+    <div class="container">
+        <div class="assessment-grid">
+            {{ range .items }}
+            <a class="assessment-card" href="{{ .url }}">
+                <div class="assessment-card-top">
+                    <span class="assessment-card-kicker">{{ .assessment }}</span>
+                    <span class="assessment-card-arrow">View</span>
+                </div>
+                <h2>{{ .title }}</h2>
+                <p class="assessment-card-category">{{ .category }}</p>
+                <p>{{ .description }}</p>
+            </a>
+            {{ end }}
+        </div>
+    </div>
+</section>
+{{ end }}
+{{ end }}

@@ -1,0 +1,773 @@
+{{ define "main" }}
+{{ $pagePath := .File.Path }}
+{{ $reportPath := .Params.report_path }}
+
+{{/* Determine if this page has an assessment report file */}}
+{{ $isAudited := false }}
+{{ $report := dict }}
+{{ if $reportPath }}
+  {{ if or (hasPrefix $reportPath "http://") (hasPrefix $reportPath "https://") }}
+    {{ with resources.GetRemote $reportPath }}
+      {{ $report = . | transform.Unmarshal }}
+      {{ $isAudited = true }}
+    {{ else }}
+      {{ warnf "assessment %q could not fetch remote report_path=%q" $pagePath $reportPath }}
+    {{ end }}
+  {{ else }}
+    {{ with readFile $reportPath }}
+      {{ $report = unmarshal "json" . }}
+      {{ $isAudited = true }}
+    {{ else }}
+      {{ warnf "assessment %q could not read local report_path=%q" $pagePath $reportPath }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{ if $isAudited }}
+  {{/* ======================================================================
+     AUDITED VIEW: Render full quantitative evidence chain assessment
+     ====================================================================== */}}
+  {{ $latestRun := dict }}
+  {{ $runs := $report.runs }}
+  {{ if gt (len $runs) 0 }}
+    {{ $latestRun = index $runs (sub (len $runs) 1) }}
+  {{ end }}
+  
+  {{/* Human Review Approved Status */}}
+  {{ $reviewApproved := false }}
+  {{ with $report.human_review }}
+    {{ $reviewApproved = .approved }}
+  {{ end }}
+
+  {{/* Extract and Format Assessment Date */}}
+  {{ $auditDate := "2026-06-12" }}
+  {{ $matches := findRE `\d{8}-\d{6}` $reportPath }}
+  {{ if gt (len $matches) 0 }}
+    {{ $rawDate := index $matches 0 }}
+    {{ $auditDate = printf "%s-%s-%s" (substr $rawDate 0 4) (substr $rawDate 4 2) (substr $rawDate 6 2) }}
+  {{ end }}
+
+  {{/* Setup rating based on score */}}
+  {{ $overallScore := $latestRun.total_score }}
+  {{ $ratingLabel := "Weak Traceability" }}
+  {{ $ratingClass := "weak" }}
+  {{ if ge $overallScore 80 }}
+    {{ $ratingLabel = "Excellent Traceability" }}
+    {{ $ratingClass = "strong" }}
+  {{ else if ge $overallScore 65 }}
+    {{ $ratingLabel = "Substantial Traceability" }}
+    {{ $ratingClass = "substantial" }}
+  {{ else if ge $overallScore 50 }}
+    {{ $ratingLabel = "Moderate Traceability" }}
+    {{ $ratingClass = "moderate" }}
+  {{ end }}
+
+<section class="audit-hero-section">
+    <div class="container">
+        <div class="audit-hero-grid">
+            <div class="audit-hero-details">
+                <span class="eyebrow">Evidence Chain Assessment</span>
+                <h1>{{ $.Title }}</h1>
+                
+                <div class="target-claim-card">
+                    <div class="claim-card-header">
+                        <span>Assessed Claim</span>
+                    </div>
+                    <p class="claim-card-text">"{{ $.Params.summary }}"</p>
+                </div>
+                
+                <div class="narrative-verdict">
+                    <p>{{ $latestRun.single_paragraph_summary }}</p>
+                </div>
+            </div>
+            
+            <div class="audit-hero-score-panel">
+                <div class="score-ring-wrapper">
+                    <svg class="score-ring-svg" viewBox="0 0 120 120">
+                        <circle class="score-ring-track" cx="60" cy="60" r="50" fill="none" />
+                        <circle class="score-ring-fill state-{{ $ratingClass }}" cx="60" cy="60" r="50" fill="none"
+                                stroke-dasharray="314"
+                                stroke-dashoffset="{{ sub 314 (div (mul 314 $overallScore) 100) }}"
+                                transform="rotate(-90 60 60)" />
+                    </svg>
+                    <div class="score-ring-content">
+                        <span class="score-ring-val">{{ $overallScore }}</span>
+                        <span class="score-ring-label">Traceability Score</span>
+                    </div>
+                </div>
+                
+                <div class="rating-display-flat rating-{{ $ratingClass }}">
+                    {{ $ratingLabel }}
+                </div>
+                
+                <div class="audit-meta-table">
+                    <div class="meta-row">
+                        <span>Project Source</span>
+                        <strong>
+                            {{ with $.Params.project_url }}
+                            <a href="{{ . }}" target="_blank" class="meta-link">Source Repository</a>
+                            {{ else }}
+                            N/A
+                            {{ end }}
+                        </strong>
+                    </div>
+                    <div class="meta-row">
+                        <span>Framework Version</span>
+                        <strong>v1.0.0</strong>
+                    </div>
+                    <div class="meta-row">
+                        <span>Assessment Date</span>
+                        <strong>{{ $auditDate }}</strong>
+                    </div>
+                    <div class="meta-row">
+                        <span>Human Review</span>
+                        <strong>
+                            {{ if $reviewApproved }}
+                            <span class="status-approved">Confirmed</span>
+                            {{ else }}
+                            <span class="status-pending">Pending</span>
+                            {{ end }}
+                        </strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{/* Evidence Chain Flowchart Visualization */}}
+<section class="evidence-chain-viz-section">
+    <div class="container">
+        <div class="section-header-centered">
+            <h2>Claim Traceability Pathway</h2>
+            <p>Inspection trail mapping the connections from raw inputs to the published claim.</p>
+        </div>
+        
+        <div class="evidence-chain-blueprint">
+            <div class="blueprint-grid-overlay"></div>
+            
+            <div class="pipeline-container">
+                {{ $stagesList := $latestRun.stages }}
+                {{ $linkageScore := (index $stagesList 5).score }}
+                {{ $linkageState := "weak" }}
+                {{ if ge $linkageScore 80 }}{{ $linkageState = "strong" }}{{ else if ge $linkageScore 55 }}{{ $linkageState = "moderate" }}{{ end }}
+                
+                {{ range $index, $stage := first 5 $stagesList }}
+                    {{ $stageNum := add $index 1 }}
+                    {{ $stageScore := .score }}
+                    {{ $stageState := "weak" }}
+                    {{ if ge $stageScore 80 }}{{ $stageState = "strong" }}{{ else if ge $stageScore 55 }}{{ $stageState = "moderate" }}{{ end }}
+                    
+                    <div class="pipeline-node node-state-{{ $stageState }}">
+                        <div class="node-details">
+                            <span class="node-num">Stage 0{{ $stageNum }}</span>
+                            <strong class="node-name">
+                                {{ if eq $stageNum 1 }}Input Data
+                                {{ else if eq $stageNum 2 }}Models & Software
+                                {{ else if eq $stageNum 3 }}Execution Run
+                                {{ else if eq $stageNum 4 }}Community Review
+                                {{ else if eq $stageNum 5 }}Publication
+                                {{ end }}
+                            </strong>
+                        </div>
+                        <div class="node-score-badge-flat">Score: {{ $stageScore }}</div>
+                    </div>
+                    
+                    {{/* Draw Linkage Connector between Stages */}}
+                    <div class="pipeline-connector connector-state-{{ $linkageState }}">
+                        <div class="connector-line-wrapper">
+                            <div class="connector-line"></div>
+                        </div>
+                    </div>
+                {{ end }}
+                
+                {{/* Final Claim Node representing the environmental claim itself */}}
+                <div class="pipeline-node node-claim node-state-{{ $ratingClass }}">
+                    <div class="node-details">
+                        <span class="node-num">Target Claim</span>
+                        <strong class="node-name">Stated Claim</strong>
+                    </div>
+                    <div class="node-score-badge-flat claim-badge-flat">Claim</div>
+                </div>
+            </div>
+            
+            <div class="blueprint-legend">
+                <div class="legend-item"><span class="legend-dot color-strong"></span> Strong inspectability (&ge;80)</div>
+                <div class="legend-item"><span class="legend-dot color-moderate"></span> Moderate inspectability (55-79)</div>
+                <div class="legend-item"><span class="legend-dot color-weak"></span> Weak inspectability (&lt;55)</div>
+                <div class="legend-item"><span class="legend-line"></span> Open Linkage Connection</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{/* Traceability Health Summary: Strongest, Weakest, Missing, remediation */}}
+{{ $strongestStage := dict }}
+{{ $weakestStage := dict }}
+{{ $maxScore := -1 }}
+{{ $minScore := 101 }}
+{{ range $latestRun.stages }}
+  {{ if gt .score $maxScore }}
+    {{ $maxScore = .score }}
+    {{ $strongestStage = . }}
+  {{ end }}
+  {{ if lt .score $minScore }}
+    {{ $minScore = .score }}
+    {{ $weakestStage = . }}
+  {{ end }}
+{{ end }}
+
+<section class="health-summary-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Traceability Health Summary</h2>
+            <p>Scan diagnosis of where the evidence chain stands and what requires attention first.</p>
+        </div>
+        
+        <div class="health-summary-grid">
+            <!-- Card 1: Strongest Area -->
+            <div class="health-card health-strongest">
+                <div class="card-kicker">Strongest Area</div>
+                <h3>{{ $strongestStage.stage_name }}</h3>
+                <div class="health-value">Inspectability: {{ $strongestStage.score }}/100</div>
+                <p>This stage provides solid evidence, making calculations and documentation highly inspectable and reusable for external actors.</p>
+            </div>
+            
+            <!-- Card 2: Weakest Area / Broken Links -->
+            <div class="health-card health-weakest">
+                <div class="card-kicker">Traceability Gap</div>
+                <h3>{{ $weakestStage.stage_name }}</h3>
+                <div class="health-value">Inspectability: {{ $weakestStage.score }}/100</div>
+                <p>This is the weakest segment of the evidence chain. Gaps in records or lack of linkage break the evidence chain here.</p>
+            </div>
+            
+            <!-- Card 3: Missing Artifacts -->
+            <div class="health-card health-missing">
+                <div class="card-kicker">Missing Artifacts</div>
+                <ul class="missing-items-list">
+                    {{ if lt (index $latestRun.stages 0).score 75 }}
+                    <li>Unique dataset DOIs & licenses</li>
+                    {{ end }}
+                    {{ if lt (index $latestRun.stages 1).score 75 }}
+                    <li>Top-level LICENSE files</li>
+                    {{ end }}
+                    {{ if lt (index $latestRun.stages 2).score 75 }}
+                    <li>Execution run configs & workflow logs</li>
+                    {{ end }}
+                    {{ if lt (index $latestRun.stages 3).score 75 }}
+                    <li>Scrutiny logs & replication results</li>
+                    {{ end }}
+                    {{ if lt (index $latestRun.stages 4).score 75 }}
+                    <li>Open access publications</li>
+                    {{ end }}
+                    {{ if lt (index $latestRun.stages 5).score 75 }}
+                    <li>Dynamic provenance graph mapping</li>
+                    {{ end }}
+                </ul>
+            </div>
+            
+            <!-- Card 4: First Priority Action -->
+            <div class="health-card health-action">
+                <div class="card-kicker">First Priority Action</div>
+                <h3>Strengthen {{ $weakestStage.stage_name }}</h3>
+                <p class="action-recommendation">
+                    {{ if eq $weakestStage.stage_name "Open Input Data and Measurement Evidence" }}
+                    Register raw dataset bundles with persistent repositories (e.g. Zenodo) and define licensing metadata.
+                    {{ else if eq $weakestStage.stage_name "Open-Source Models, Methods, and Software" }}
+                    Add an OSI-compliant LICENSE file to the root repository and specify dependencies via lockfiles.
+                    {{ else if eq $weakestStage.stage_name "Open Execution and Reproducibility" }}
+                    Configure an end-to-end Snakemake workflow and publish the full run logs linking inputs to final figures.
+                    {{ else if eq $weakestStage.stage_name "Open Community and Review" }}
+                    Document PR review guidelines, set up public issue boards, and make replication logs accessible.
+                    {{ else if eq $weakestStage.stage_name "Open Publications and Communication" }}
+                    Release method documents in open-access formats and link claims to exact workflow artifacts.
+                    {{ else }}
+                    Create a versioned provenance graph mapping every step of the computation from source data to claim.
+                    {{ end }}
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{/* Open Linkage Centerpiece Deep-Dive */}}
+{{ $linkageStage := index $latestRun.stages 5 }}
+<section class="linkage-audit-section">
+    <div class="container">
+        <div class="linkage-audit-panel">
+            <div class="linkage-audit-header" style="display: flex; gap: 32px; align-items: center;">
+                {{ $linkageScore := $linkageStage.score }}
+                {{ $linkageState := "weak" }}
+                {{ if ge $linkageScore 80 }}{{ $linkageState = "strong" }}{{ else if ge $linkageScore 55 }}{{ $linkageState = "moderate" }}{{ end }}
+                <div class="score-ring-wrapper score-ring-sm" style="flex-shrink: 0; margin: 0;">
+                    <svg class="score-ring-svg" viewBox="0 0 120 120">
+                        <circle class="score-ring-track" cx="60" cy="60" r="50" fill="none" />
+                        <circle class="score-ring-fill state-{{ $linkageState }}" cx="60" cy="60" r="50" fill="none"
+                                stroke-dasharray="314"
+                                stroke-dashoffset="{{ sub 314 (div (mul 314 $linkageStage.score) 100) }}"
+                                transform="rotate(-90 60 60)" />
+                    </svg>
+                    <div class="score-ring-content">
+                        <span class="score-ring-val">{{ $linkageStage.score }}</span>
+                        <span class="score-ring-label">Linkage Strength</span>
+                    </div>
+                </div>
+                <div class="linkage-audit-intro">
+                    <span class="badge badge-centerpiece" style="background: var(--color-azure); color: var(--color-black);">Framework Metric</span>
+                    <h3>Evidence Linkage Summary</h3>
+                    <p>Open Linkage is not a standalone category; it is the connectivity of the evidence chain. Below is the connection status of the connection links between each step in this project's journey.</p>
+                </div>
+            </div>
+            
+            <div class="linkage-checklist">
+                <!-- Link 1: Data to Code -->
+                {{ $link1State := "broken" }}
+                {{ if ge (index $latestRun.stages 0).score 75 }}
+                    {{ if ge (index $latestRun.stages 1).score 75 }}{{ $link1State = "verified" }}{{ else }}{{ $link1State = "partial" }}{{ end }}
+                {{ else if ge (index $latestRun.stages 0).score 55 }}
+                    {{ $link1State = "partial" }}
+                {{ end }}
+                <div class="linkage-item link-{{ $link1State }}">
+                    <div class="linkage-info">
+                        <strong>Input Data to Models & Software Connection</strong>
+                        <p>Are data input paths and schemas programmatically defined inside the code files or configurations?</p>
+                    </div>
+                    <div class="linkage-status-label">{{ if eq $link1State "verified" }}Connected{{ else if eq $link1State "partial" }}Partially Connected{{ else }}Disconnected{{ end }}</div>
+                </div>
+                
+                <!-- Link 2: Code to Execution -->
+                {{ $link2State := "broken" }}
+                {{ if ge (index $latestRun.stages 1).score 75 }}
+                    {{ if ge (index $latestRun.stages 2).score 75 }}{{ $link2State = "verified" }}{{ else }}{{ $link2State = "partial" }}{{ end }}
+                {{ else if ge (index $latestRun.stages 1).score 55 }}
+                    {{ $link2State = "partial" }}
+                {{ end }}
+                <div class="linkage-item link-{{ $link2State }}">
+                    <div class="linkage-info">
+                        <strong>Models & Software to Execution Connection</strong>
+                        <p>Is code execution managed through versioned workflow scripts (e.g. Snakemake pipelines) rather than manual scripts?</p>
+                    </div>
+                    <div class="linkage-status-label">{{ if eq $link2State "verified" }}Connected{{ else if eq $link2State "partial" }}Partially Connected{{ else }}Disconnected{{ end }}</div>
+                </div>
+                
+                <!-- Link 3: Execution to Review -->
+                {{ $link3State := "broken" }}
+                {{ if ge (index $latestRun.stages 2).score 75 }}
+                    {{ if ge (index $latestRun.stages 3).score 75 }}{{ $link3State = "verified" }}{{ else }}{{ $link3State = "partial" }}{{ end }}
+                {{ else if ge (index $latestRun.stages 2).score 55 }}
+                    {{ $link3State = "partial" }}
+                {{ end }}
+                <div class="linkage-item link-{{ $link3State }}">
+                    <div class="linkage-info">
+                        <strong>Execution Run to Community & Review Connection</strong>
+                        <p>Are execution outputs and logs tested automatically (CI/CD) and verified inside public pull request reviews?</p>
+                    </div>
+                    <div class="linkage-status-label">{{ if eq $link3State "verified" }}Connected{{ else if eq $link3State "partial" }}Partially Connected{{ else }}Disconnected{{ end }}</div>
+                </div>
+                
+                <!-- Link 4: Review to Publication -->
+                {{ $link4State := "broken" }}
+                {{ if ge (index $latestRun.stages 3).score 75 }}
+                    {{ if ge (index $latestRun.stages 4).score 75 }}{{ $link4State = "verified" }}{{ else }}{{ $link4State = "partial" }}{{ end }}
+                {{ else if ge (index $latestRun.stages 3).score 55 }}
+                    {{ $link4State = "partial" }}
+                {{ end }}
+                <div class="linkage-item link-{{ $link4State }}">
+                    <div class="linkage-info">
+                        <strong>Community Review to Publication Connection</strong>
+                        <p>Are peer reviews, community issues, and discussions linked directly to published methodology reports?</p>
+                    </div>
+                    <div class="linkage-status-label">{{ if eq $link4State "verified" }}Connected{{ else if eq $link4State "partial" }}Partially Connected{{ else }}Disconnected{{ end }}</div>
+                </div>
+                
+                <!-- Link 5: Publication to Claim -->
+                {{ $link5State := "broken" }}
+                {{ if ge (index $latestRun.stages 4).score 75 }}
+                    {{ if ge (index $latestRun.stages 5).score 75 }}{{ $link5State = "verified" }}{{ else }}{{ $link5State = "partial" }}{{ end }}
+                {{ else if ge (index $latestRun.stages 4).score 55 }}
+                    {{ $link5State = "partial" }}
+                {{ end }}
+                <div class="linkage-item link-{{ $link5State }}">
+                    <div class="linkage-info">
+                        <strong>Publication to Stated Environmental Claim Connection</strong>
+                        <p>Does the final published paper cite the exact dataset identifiers, model hashes, and run logs that produced the results?</p>
+                    </div>
+                    <div class="linkage-status-label">{{ if eq $link5State "verified" }}Connected{{ else if eq $link5State "partial" }}Partially Connected{{ else }}Disconnected{{ end }}</div>
+                </div>
+            </div>
+            
+            <div class="linkage-audit-verdict">
+                <div class="verdict-detail">
+                    <strong>Linkage Summary</strong>
+                    <p>{{ $linkageStage.score_derivation }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{/* Detailed Dimension Analysis Section */}}
+<section class="dimension-analysis-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Detailed Dimension Inspection</h2>
+            <p>Granular findings for each processing step in the Open Traceability framework.</p>
+        </div>
+        
+        <div class="dimension-inspect-grid">
+            {{ range $index, $stage := $latestRun.stages }}
+                {{ $stageNum := add $index 1 }}
+                {{ $score := .score }}
+                {{ $stageState := "weak" }}
+                {{ if ge $score 80 }}{{ $stageState = "strong" }}{{ else if ge $score 55 }}{{ $stageState = "moderate" }}{{ end }}
+                
+                {{/* Split score_derivation into Strengths (before However) and Weaknesses (after) */}}
+                {{ $strengths := .score_derivation }}
+                {{ $weaknesses := "" }}
+                {{ $parts := split .score_derivation "However," }}
+                {{ if gt (len $parts) 1 }}
+                    {{ $strengths = index $parts 0 }}
+                    {{ $weaknesses = printf "However,%s" (index $parts 1) }}
+                {{ else }}
+                    {{ $parts2 := split .score_derivation "but" }}
+                    {{ if gt (len $parts2) 1 }}
+                        {{ $strengths = index $parts2 0 }}
+                        {{ $weaknesses = printf "but%s" (index $parts2 1) }}
+                    {{ end }}
+                {{ end }}
+                
+                <div class="dimension-inspect-card stage-state-{{ $stageState }}">
+                    <div class="dim-card-header">
+                        <div class="dim-title-group">
+                            <span class="dim-label">Stage 0{{ $stageNum }}</span>
+                            <h3>{{ .stage_name }}</h3>
+                        </div>
+                        <div class="dim-score-badge-flat">Score: {{ $score }}/100</div>
+                    </div>
+                    
+                    <div class="dim-verdict-banner">
+                        <p><strong>Summary:</strong> {{ $strengths }}</p>
+                    </div>
+                    
+                    <div class="dim-audit-details">
+                        <div class="dim-audit-col col-evidence">
+                            <h4>Evidence Found</h4>
+                            <p class="dim-detail-text">{{ $strengths }}</p>
+                        </div>
+                        
+                        <div class="dim-audit-col col-gaps">
+                            <h4>Gaps Identified</h4>
+                            <p class="dim-detail-text">
+                                {{ if $weaknesses }}
+                                    {{ $weaknesses }}
+                                {{ else }}
+                                    No significant gaps identified. This stage is fully documented and verifiable.
+                                {{ end }}
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="dim-card-footer">
+                        <div class="dim-why-matters">
+                            <strong>Why this matters for Traceability:</strong>
+                            <span>
+                                {{ if eq $stageNum 1 }}Without identifiable raw input data, the foundation of the claim cannot be verified, hiding potential errors or data manipulation.
+                                {{ else if eq $stageNum 2 }}Without open source models and code, computations are hidden in a black box, making independent scientific review impossible.
+                                {{ else if eq $stageNum 3 }}Without open run configurations and execution records, we cannot verify if the software was run correctly or generated the reported results.
+                                {{ else if eq $stageNum 4 }}Without open review channels, the process of critique, debugging, peer-review, and community scrutiny is kept completely invisible.
+                                {{ else if eq $stageNum 5 }}Without open access publications and summaries, final findings are hidden from general scrutiny and cannot be easily cited.
+                                {{ else }}Without versioned linkage records, all other steps are disconnected silos, destroying the integrity of the evidence chain.
+                                {{ end }}
+                            </span>
+                        </div>
+                        
+                        <div class="dim-action-item">
+                            <strong>Recommended next step:</strong>
+                            <span>
+                                {{ if eq $stageNum 1 }}Publish data manifests on Zenodo and document quality controls.
+                                {{ else if eq $stageNum 2 }}Add an SPDX AGPLv3 header and root LICENSE file.
+                                {{ else if eq $stageNum 3 }}Export Conda lockfiles and upload workflow execution logs.
+                                {{ else if eq $stageNum 4 }}Create public issue boards and invite third-party replication.
+                                {{ else if eq $stageNum 5 }}Publish methodologies in open journals and link to specific run IDs.
+                                {{ else }}Build a machine-readable JSON provenance record linking code to outputs.
+                                {{ end }}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    {{ with .references }}
+                    <div class="dim-references-wrapper">
+                        <strong>Inspectable Evidence Artifacts ({{ len . }})</strong>
+                        <div class="dim-references-grid">
+                            {{ range . }}
+                            <a class="dim-reference-card" href="{{ .url }}" target="_blank">
+                                <div class="ref-card-header">
+                                    <span class="ref-label">{{ .label }}</span>
+                                    <i class="fa-solid fa-arrow-up-right-from-square ref-arrow"></i>
+                                </div>
+                                <p class="ref-quote">"{{ .quote_or_finding | plainify }}"</p>
+                                <span class="ref-relevance"><strong>Relevance:</strong> {{ .relevance }}</span>
+                            </a>
+                            {{ end }}
+                        </div>
+                    </div>
+                    {{ end }}
+                </div>
+            {{ end }}
+        </div>
+    </div>
+</section>
+
+{{/* Traceability Gaps Section */}}
+<section class="traceability-gaps-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Critical Traceability Gaps</h2>
+            <p>Inspection details of where the evidence chain breaks down and what that implies for public trust.</p>
+        </div>
+        
+        <div class="gaps-table-wrapper">
+            <table class="gaps-table">
+                <thead>
+                    <tr>
+                        <th>Identified Gap</th>
+                        <th>Impact on Traceability</th>
+                        <th>Suggested Remediation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{ if lt (index $latestRun.stages 0).score 75 }}
+                    <tr>
+                        <td><strong>Dataset not linked or versioned</strong></td>
+                        <td><span class="gap-trace-crit">High</span> &mdash; Blocks inspection of inputs</td>
+                        <td>Register raw datasets in Zenodo and cite unique DOIs in config files.</td>
+                    </tr>
+                    {{ end }}
+                    {{ if lt (index $latestRun.stages 1).score 80 }}
+                    <tr>
+                        <td><strong>Missing root license or dependencies</strong></td>
+                        <td><span class="gap-trace-med">Medium</span> &mdash; Restricts model inspectability</td>
+                        <td>Add a LICENSE file (e.g. AGPL-3.0) and export environment lockfiles.</td>
+                    </tr>
+                    {{ end }}
+                    {{ if lt (index $latestRun.stages 2).score 75 }}
+                    <tr>
+                        <td><strong>Workflow run details not archived</strong></td>
+                        <td><span class="gap-trace-crit">Critical</span> &mdash; Restricts computational reproducibility</td>
+                        <td>Archive Snakemake workflow runs and publish log files on Zenodo.</td>
+                    </tr>
+                    {{ end }}
+                    {{ if lt (index $latestRun.stages 3).score 75 }}
+                    <tr>
+                        <td><strong>Review and replication logs hidden</strong></td>
+                        <td><span class="gap-trace-med">Medium</span> &mdash; Hides validation gate process</td>
+                        <td>Maintain an open-source technical review tracker in public channels.</td>
+                    </tr>
+                    {{ end }}
+                    {{ if lt (index $latestRun.stages 4).score 75 }}
+                    <tr>
+                        <td><strong>Publication lacks direct evidence citation</strong></td>
+                        <td><span class="gap-trace-crit">High</span> &mdash; Claims are unlinked to runs</td>
+                        <td>Add structured CITATION.cff and link claim statements to run hashes.</td>
+                    </tr>
+                    {{ end }}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+{{/* Recommendations Action Roadmap */}}
+<section class="recommendations-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Remediation & Improvements Roadmap</h2>
+            <p>Actionable roadmap prioritized by implementation complexity.</p>
+        </div>
+        
+        <div class="roadmap-grid">
+            <!-- Phase 1: Quick Wins -->
+            <div class="roadmap-card phase-quick">
+                <div class="phase-header">
+                    <span class="phase-badge">Phase 1</span>
+                    <h3>Quick Wins</h3>
+                    <p>Low effort, high immediate return.</p>
+                </div>
+                <ul class="roadmap-action-list">
+                    <li>
+                        <div class="action-info">
+                            <strong>Add CITATION.cff file</strong>
+                            <p>Enables clear publication-to-repository citation schema.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="action-info">
+                            <strong>Commit top-level LICENSE</strong>
+                            <p>Resolves legal terms of software and dataset inspectability.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="action-info">
+                            <strong>Link communication channels</strong>
+                            <p>Add status/discord badges to repository README files.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Phase 2: Medium Effort -->
+            <div class="roadmap-card phase-medium">
+                <div class="phase-header">
+                    <span class="phase-badge">Phase 2</span>
+                    <h3>Medium Effort</h3>
+                    <p>Standard engineering practices.</p>
+                </div>
+                <ul class="roadmap-action-list">
+                    <li>
+                        <div class="action-info">
+                            <strong>Specify configurations in config files</strong>
+                            <p>Provide explicit parameters and dataset configurations in repository.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="action-info">
+                            <strong>Lock computational environments</strong>
+                            <p>Lock dependencies using Conda-lock or Docker image digests.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="action-info">
+                            <strong>Archive automated workflow logs</strong>
+                            <p>Publish CI test summaries and solver objective check values.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Phase 3: Strategic Upgrades -->
+            <div class="roadmap-card phase-strategic">
+                <div class="phase-header">
+                    <span class="phase-badge">Phase 3</span>
+                    <h3>Strategic Upgrades</h3>
+                    <p>Highest traceability return.</p>
+                </div>
+                <ul class="roadmap-action-list">
+                    <li>
+                        <div class="action-info">
+                            <strong>Publish workflow runs on Zenodo</strong>
+                            <p>Create persistent, immutable archives of the full execution outputs.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="action-info">
+                            <strong>Build claims-to-evidence provenance graphs</strong>
+                            <p>Establish a machine-readable map of the end-to-end evidence trail.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{/* Methodology, Disclaimer & Definitions (Moved Lower) */}}
+<section class="audit-methodology-section">
+    <div class="container">
+        <div class="accordion-panel">
+            <div class="accordion-item">
+                <h3 class="accordion-title">Disclaimer & Assessment Methodology</h3>
+                <div class="accordion-content">
+                    <p class="panel-note">
+                        This score was produced via LLM-assisted assessment of the repository structure and the supplied evidence bundle. These findings should be treated as a directional pilot signal rather than a verified rating. For more details on our pilot objectives and the development path toward rules-based human review, see the <a href="{{ "/#roadmap" | absURL }}" class="inline-link-inline">Development Roadmap</a>.
+                        {{ with $.Params.report_source }} Raw files are accessible at the <a href="{{ . }}" target="_blank" class="inline-link-inline">assessment report source</a>.{{ end }}
+                    </p>
+                </div>
+            </div>
+            
+            <div class="accordion-item">
+                <h3 class="accordion-title">Framework Dimension Definitions</h3>
+                <div class="accordion-content">
+                    <ul class="definitions-grid-list">
+                        <li>
+                            <strong>Open Input Data:</strong>
+                            <span>Identifiable, documented, attributable, versioned raw measurement evidence inputs.</span>
+                        </li>
+                        <li>
+                            <strong>Open-Source Software:</strong>
+                            <span>Inspectability of Analytical logic via code repositories, configurations, and license files.</span>
+                        </li>
+                        <li>
+                            <strong>Open Execution:</strong>
+                            <span>Computational environments, workflows, run logs, and outputs make rerun processes inspectable.</span>
+                        </li>
+                        <li>
+                            <strong>Open Community & Review:</strong>
+                            <span>Scrutiny, peer review, issue tracking, and responses to replication challenges are visible.</span>
+                        </li>
+                        <li>
+                            <strong>Open Publication:</strong>
+                            <span>Resulting reports, papers, and dashboards are openly accessible and reference source materials.</span>
+                        </li>
+                        <li>
+                            <strong>Open Linkage:</strong>
+                            <span>The versioned, explicit connectivity linking data, models, execution, review, and publication steps.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="accordion-item">
+                <h3 class="accordion-title">Human Review Notes</h3>
+                <div class="accordion-content">
+                    <p class="panel-note">
+                        {{ if $reviewApproved }}
+                        Independent human review of this assessment is complete and findings are confirmed.
+                        {{ else }}
+                        Human review of this assessment report is pending. An independent reviewer must inspect the repository references to verify the findings.
+                        {{ end }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{ else }}
+  {{/* ======================================================================
+     MINIMAL PENDING VIEW: Simple minimal information for unassessed projects
+     ====================================================================== */}}
+<section class="audit-hero-section" style="padding: 100px 0 120px;">
+    <div class="container">
+        <div style="max-width: 720px; margin: 0 auto; text-align: center; display: flex; flex-direction: column; gap: 24px;">
+            <span class="eyebrow">Assessment Pending Review</span>
+            <h1 style="margin-bottom: 8px;">{{ .Title }}</h1>
+            
+            {{ with .Params.project_url }}
+            <p><a href="{{ . }}" target="_blank" class="inline-link" style="margin-top: 0;">Project Source Repository</a></p>
+            {{ end }}
+
+            <div class="target-claim-card" style="text-align: left;">
+                <div class="claim-card-header">
+                    <span>Assessed Claim</span>
+                </div>
+                <p class="claim-card-text" style="font-size: 18px;">"{{ .Params.summary }}"</p>
+            </div>
+            
+            <div style="background: #ffffff; border: 1px solid var(--color-border); border-radius: 20px; padding: 32px; text-align: left; box-shadow: 0 10px 30px rgba(16, 22, 32, 0.03); margin-top: 16px;">
+                <h3 style="font-size: 18px; margin-bottom: 16px;">Self-Reported Evidence Signals</h3>
+                <ul class="assessment-list" style="gap: 14px;">
+                    {{ range .Params.signals }}
+                    <li style="font-size: 15px; color: var(--color-text-secondary);">{{ . }}</li>
+                    {{ end }}
+                </ul>
+            </div>
+
+            <p class="panel-note" style="margin-top: 24px; font-size: 15px;">
+                The quantitative inspectability assessment for this project is currently in progress. 
+                The full evidence-chain tracing interface will be generated automatically once the report credentials are compiled.
+            </p>
+        </div>
+    </div>
+</section>
+{{ end }}
+{{ end }}
