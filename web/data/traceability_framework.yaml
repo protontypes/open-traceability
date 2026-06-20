@@ -1,0 +1,84 @@
+stages:
+  - id: 1
+    short_name: "Input Data"
+    full_name: "Open Input Data and Measurement Evidence"
+    definition: "Identifiable, documented, attributable, versioned raw measurement evidence inputs."
+    why_it_matters: "Without identifiable raw input data, the foundation of the claim cannot be verified, hiding potential errors or data manipulation."
+    recommended_next_step: "Publish data manifests on Zenodo and document quality controls."
+    missing_artifact: "Unique dataset DOIs & licenses"
+    priority_action: "Register raw dataset bundles with persistent repositories (e.g. Zenodo) and define licensing metadata."
+    gap_name: "Dataset not linked or versioned"
+    gap_impact_level: "High"
+    gap_impact_desc: "Blocks inspection of inputs"
+    gap_remediation: "Register raw datasets in Zenodo and cite unique DOIs in config files."
+    gap_threshold: 75
+
+  - id: 2
+    short_name: "Models & Software"
+    full_name: "Open-Source Models, Methods, and Software"
+    definition: "Inspectability of Analytical logic via code repositories, configurations, and license files."
+    why_it_matters: "Without open source models and code, computations are hidden in a black box, making independent scientific review impossible."
+    recommended_next_step: "Add an SPDX AGPLv3 header and root LICENSE file."
+    missing_artifact: "Top-level LICENSE files"
+    priority_action: "Add an OSI-compliant LICENSE file to the root repository and specify dependencies via lockfiles."
+    gap_name: "Missing root license or dependencies"
+    gap_impact_level: "Medium"
+    gap_impact_desc: "Restricts model inspectability"
+    gap_remediation: "Add a LICENSE file (e.g. AGPL-3.0) and export environment lockfiles."
+    gap_threshold: 80
+
+  - id: 3
+    short_name: "Execution Run"
+    full_name: "Open Execution and Reproducibility"
+    definition: "Computational environments, workflows, run logs, and outputs make rerun processes inspectable."
+    why_it_matters: "Without open run configurations and execution records, we cannot verify if the software was run correctly or generated the reported results."
+    recommended_next_step: "Export Conda lockfiles and upload workflow execution logs."
+    missing_artifact: "Execution run configs & workflow logs"
+    priority_action: "Configure an end-to-end Snakemake workflow and publish the full run logs linking inputs to final figures."
+    gap_name: "Workflow run details not archived"
+    gap_impact_level: "Critical"
+    gap_impact_desc: "Restricts computational reproducibility"
+    gap_remediation: "Archive Snakemake workflow runs and publish log files on Zenodo."
+    gap_threshold: 75
+
+  - id: 4
+    short_name: "Community Review"
+    full_name: "Open Community and Review"
+    definition: "Scrutiny, peer review, issue tracking, and responses to replication challenges are visible."
+    why_it_matters: "Without open review channels, the process of critique, debugging, peer-review, and community scrutiny is kept completely invisible."
+    recommended_next_step: "Create public issue boards and invite third-party replication."
+    missing_artifact: "Scrutiny logs & replication results"
+    priority_action: "Document PR review guidelines, set up public issue boards, and make replication logs accessible."
+    gap_name: "Review and replication logs hidden"
+    gap_impact_level: "Medium"
+    gap_impact_desc: "Hides validation gate process"
+    gap_remediation: "Maintain an open-source technical review tracker in public channels."
+    gap_threshold: 75
+
+  - id: 5
+    short_name: "Publication"
+    full_name: "Open Publications and Communication"
+    definition: "Resulting reports, papers, and dashboards are openly accessible and reference source materials."
+    why_it_matters: "Without open access publications and summaries, final findings are hidden from general scrutiny and cannot be easily cited."
+    recommended_next_step: "Publish methodologies in open journals and link to specific run IDs."
+    missing_artifact: "Open access publications"
+    priority_action: "Release method documents in open-access formats and link claims to exact workflow artifacts."
+    gap_name: "Publication lacks direct evidence citation"
+    gap_impact_level: "High"
+    gap_impact_desc: "Claims are unlinked to runs"
+    gap_remediation: "Add structured CITATION.cff and link claim statements to run hashes."
+    gap_threshold: 75
+
+  - id: 6
+    short_name: "Open Linkage"
+    full_name: "Open Linkage"
+    definition: "The versioned, explicit connectivity linking data, models, execution, review, and publication steps."
+    why_it_matters: "Without versioned linkage records, all other steps are disconnected silos, destroying the integrity of the evidence chain."
+    recommended_next_step: "Build a machine-readable JSON provenance record linking code to outputs."
+    missing_artifact: "Dynamic provenance graph mapping"
+    priority_action: "Create a versioned provenance graph mapping every step of the computation from source data to claim."
+    gap_name: ""
+    gap_impact_level: ""
+    gap_impact_desc: ""
+    gap_remediation: ""
+    gap_threshold: 75

@@ -1,0 +1,34 @@
+phases:
+  - id: "quick"
+    badge: "Phase 1"
+    title: "Quick Wins"
+    subtitle: "Low effort, high immediate return."
+    actions:
+      - title: "Add CITATION.cff file"
+        description: "Enables clear publication-to-repository citation schema."
+      - title: "Commit top-level LICENSE"
+        description: "Resolves legal terms of software and dataset inspectability."
+      - title: "Link communication channels"
+        description: "Add status/discord badges to repository README files."
+
+  - id: "medium"
+    badge: "Phase 2"
+    title: "Medium Effort"
+    subtitle: "Standard engineering practices."
+    actions:
+      - title: "Specify configurations in config files"
+        description: "Provide explicit parameters and dataset configurations in repository."
+      - title: "Lock computational environments"
+        description: "Lock dependencies using Conda-lock or Docker image digests."
+      - title: "Archive automated workflow logs"
+        description: "Publish CI test summaries and solver objective check values."
+
+  - id: "strategic"
+    badge: "Phase 3"
+    title: "Strategic Upgrades"
+    subtitle: "Highest traceability return."
+    actions:
+      - title: "Publish workflow runs on Zenodo"
+        description: "Create persistent, immutable archives of the full execution outputs."
+      - title: "Build claims-to-evidence provenance graphs"
+        description: "Establish a machine-readable map of the end-to-end evidence trail."

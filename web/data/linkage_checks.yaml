@@ -1,0 +1,26 @@
+checks:
+  - id: 1
+    title: "Input Data to Models & Software Connection"
+    question: "Are data input paths and schemas programmatically defined inside the code files or configurations?"
+    source_stage_index: 0
+    target_stage_index: 1
+  - id: 2
+    title: "Models & Software to Execution Connection"
+    question: "Is code execution managed through versioned workflow scripts (e.g. Snakemake pipelines) rather than manual scripts?"
+    source_stage_index: 1
+    target_stage_index: 2
+  - id: 3
+    title: "Execution Run to Community & Review Connection"
+    question: "Are execution outputs and logs tested automatically (CI/CD) and verified inside public pull request reviews?"
+    source_stage_index: 2
+    target_stage_index: 3
+  - id: 4
+    title: "Community Review to Publication Connection"
+    question: "Are peer reviews, community issues, and discussions linked directly to published methodology reports?"
+    source_stage_index: 3
+    target_stage_index: 4
+  - id: 5
+    title: "Publication to Stated Environmental Claim Connection"
+    question: "Does the final published paper cite the exact dataset identifiers, model hashes, and run logs that produced the results?"
+    source_stage_index: 4
+    target_stage_index: 5

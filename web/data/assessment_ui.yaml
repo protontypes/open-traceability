@@ -1,0 +1,82 @@
+hero:
+  eyebrow: "Evidence Chain Assessment"
+  claim_header: "Assessed Claim"
+  score_label: "Traceability Score"
+  meta:
+    project_source: "Project Source"
+    framework_version: "Framework Version"
+    assessment_date: "Assessment Date"
+    human_review: "Human Review"
+    confirmed: "Confirmed"
+    pending: "Pending"
+
+pathway:
+  title: "Claim Traceability Pathway"
+  description: "Inspection trail mapping the connections from raw inputs to the published claim."
+  legend:
+    strong: "Strong inspectability (≥80)"
+    moderate: "Moderate inspectability (55-79)"
+    weak: "Weak inspectability (<55)"
+    linkage: "Open Linkage Connection"
+
+health_summary:
+  title: "Traceability Health Summary"
+  description: "Scan diagnosis of where the evidence chain stands and what requires attention first."
+  strongest:
+    kicker: "Strongest Area"
+    description: "This stage provides solid evidence, making calculations and documentation highly inspectable and reusable for external actors."
+  weakest:
+    kicker: "Traceability Gap"
+    description: "This is the weakest segment of the evidence chain. Gaps in records or lack of linkage break the evidence chain here."
+  missing:
+    kicker: "Missing Artifacts"
+  priority_action:
+    kicker: "First Priority Action"
+    title_prefix: "Strengthen"
+
+linkage:
+  title: "Evidence Linkage Summary"
+  description: "Open Linkage is not a standalone category; it is the connectivity of the evidence chain. Below is the connection status of the connection links between each step in this project's journey."
+  badge: "Framework Metric"
+  status:
+    connected: "Connected"
+    partially_connected: "Partially Connected"
+    disconnected: "Disconnected"
+
+detailed_inspection:
+  title: "Detailed Dimension Inspection"
+  description: "Granular findings for each processing step in the Open Traceability framework."
+  evidence_found: "Evidence Found"
+  gaps_identified: "Gaps Identified"
+  no_gaps: "No significant gaps identified. This stage is fully documented and verifiable."
+  why_matters_label: "Why this matters for Traceability:"
+  next_step_label: "Recommended next step:"
+  artifacts_title: "Inspectable Evidence Artifacts"
+  relevance_label: "Relevance:"
+
+gaps:
+  title: "Critical Traceability Gaps"
+  description: "Inspection details of where the evidence chain breaks down and what that implies for public trust."
+  table:
+    gap: "Identified Gap"
+    impact: "Impact on Traceability"
+    remediation: "Suggested Remediation"
+
+roadmap:
+  title: "Remediation & Improvements Roadmap"
+  description: "Actionable roadmap prioritized by implementation complexity."
+
+methodology:
+  disclaimer_title: "Disclaimer & Assessment Methodology"
+  disclaimer_text: "This score was produced via LLM-assisted assessment of the repository structure and the supplied evidence bundle. These findings should be treated as a directional pilot signal rather than a verified rating. For more details on our pilot objectives and the development path toward rules-based human review, see the <a href=\"/#roadmap\" class=\"inline-link-inline\">Development Roadmap</a>."
+  definitions_title: "Framework Dimension Definitions"
+  review_notes_title: "Human Review Notes"
+  review_notes_approved: "Independent human review of this assessment is complete and findings are confirmed."
+  review_notes_pending: "Human review of this assessment report is pending. An independent reviewer must inspect the repository references to verify the findings."
+
+pending:
+  eyebrow: "Assessment Pending Review"
+  source_repo: "Project Source Repository"
+  claim_header: "Assessed Claim"
+  signals_title: "Self-Reported Evidence Signals"
+  in_progress_text: "The quantitative inspectability assessment for this project is currently in progress. The full evidence-chain tracing interface will be generated automatically once the report credentials are compiled."
