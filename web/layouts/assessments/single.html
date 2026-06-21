@@ -1,7 +1,7 @@
 {{ define "main" }}
 {{ $pagePath := .File.Path }}
 {{ $reportPath := .Params.report_path }}
-{{ $ui := $.Site.Data.assessment_ui }}
+{{ $ui := hugo.Data.assessment_ui }}
 
 {{/* Determine if this page has an assessment report file */}}
 {{ $isAudited := false }}
@@ -26,7 +26,7 @@
 
 {{ if $isAudited }}
   {{/* ======================================================================
-     AUDITED VIEW: Render full quantitative evidence chain assessment
+     AUDITED VIEW: Full quantitative evidence chain assessment
      ====================================================================== */}}
   {{ $latestRun := dict }}
   {{ $runs := $report.runs }}
@@ -63,8 +63,21 @@
     {{ $ratingClass = "moderate" }}
   {{ end }}
 
-<section class="audit-hero-section">
+<section class="audit-hero-section" style="padding-top: 40px;">
     <div class="container">
+        <div class="assessment-disclaimer" style="margin-bottom: 40px; margin-top: 0;">
+            <div class="disclaimer-icon-wrapper">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div class="disclaimer-content">
+                <h4 class="panel-label">{{ $ui.methodology.disclaimer_title }}</h4>
+                <p class="panel-note">
+                    {{ $ui.methodology.disclaimer_text | safeHTML }}
+                    {{ with $.Params.report_source }} Raw files are accessible at the <a href="{{ . }}" target="_blank" class="inline-link-inline">assessment report source</a>.{{ end }}
+                </p>
+            </div>
+        </div>
+        
         <div class="audit-hero-grid">
             <div class="audit-hero-details">
                 <span class="eyebrow">{{ $ui.hero.eyebrow }}</span>
@@ -158,7 +171,7 @@
                     {{ $stageScore := .score }}
                     {{ $stageState := "weak" }}
                     {{ if ge $stageScore 80 }}{{ $stageState = "strong" }}{{ else if ge $stageScore 55 }}{{ $stageState = "moderate" }}{{ end }}
-                    {{ $stageDef := index $.Site.Data.traceability_framework.stages $index }}
+                    {{ $stageDef := index hugo.Data.traceability_framework.stages $index }}
                     
                     <div class="pipeline-node node-state-{{ $stageState }}">
                         <div class="node-details">
@@ -240,7 +253,7 @@
             <div class="health-card health-missing">
                 <div class="card-kicker">{{ $ui.health_summary.missing.kicker }}</div>
                 <ul class="missing-items-list">
-                    {{ range $index, $stageDef := $.Site.Data.traceability_framework.stages }}
+                    {{ range $index, $stageDef := hugo.Data.traceability_framework.stages }}
                       {{ $stageScore := (index $latestRun.stages $index).score }}
                       {{ if lt $stageScore 75 }}
                       <li>{{ $stageDef.missing_artifact }}</li>
@@ -251,7 +264,7 @@
             
             <!-- Card 4: First Priority Action -->
             {{ $weakestDef := dict }}
-            {{ range $.Site.Data.traceability_framework.stages }}
+            {{ range hugo.Data.traceability_framework.stages }}
               {{ if eq .full_name $weakestStage.stage_name }}
                 {{ $weakestDef = . }}
               {{ end }}
@@ -297,7 +310,7 @@
             </div>
             
             <div class="linkage-checklist">
-                {{ range $.Site.Data.linkage_checks.checks }}
+                {{ range hugo.Data.linkage_checks.checks }}
                     {{ $sourceScore := (index $latestRun.stages .source_stage_index).score }}
                     {{ $targetScore := (index $latestRun.stages .target_stage_index).score }}
                     {{ $linkState := "broken" }}
@@ -361,7 +374,7 @@
                     {{ end }}
                 {{ end }}
                 
-                {{ $stageDef := index $.Site.Data.traceability_framework.stages $index }}
+                {{ $stageDef := index hugo.Data.traceability_framework.stages $index }}
                 <div class="dimension-inspect-card stage-state-{{ $stageState }}">
                     <div class="dim-card-header">
                         <div class="dim-title-group">
@@ -446,7 +459,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                                        {{ range $index, $stageDef := $.Site.Data.traceability_framework.stages }}
+                                        {{ range $index, $stageDef := hugo.Data.traceability_framework.stages }}
                                             {{ if $stageDef.gap_name }}
                                                 {{ $stageScore := (index $latestRun.stages $index).score }}
                                                 {{/* Coerce both values to integers to ensure numeric comparison works reliably */}}
@@ -476,7 +489,7 @@
         </div>
         
         <div class="roadmap-grid">
-            {{ range $.Site.Data.remediation_roadmap.phases }}
+            {{ range hugo.Data.remediation_roadmap.phases }}
             <div class="roadmap-card phase-{{ .id }}">
                 <div class="phase-header">
                     <span class="phase-badge">{{ .badge }}</span>
@@ -499,25 +512,15 @@
     </div>
 </section>
 
-{{/* Methodology, Disclaimer & Definitions (Moved Lower) */}}
+{{/* Methodology & Definitions */}}
 <section class="audit-methodology-section">
     <div class="container">
         <div class="accordion-panel">
             <div class="accordion-item">
-                <h3 class="accordion-title">{{ $ui.methodology.disclaimer_title }}</h3>
-                <div class="accordion-content">
-                    <p class="panel-note">
-                        {{ $ui.methodology.disclaimer_text | safeHTML }}
-                        {{ with $.Params.report_source }} Raw files are accessible at the <a href="{{ . }}" target="_blank" class="inline-link-inline">assessment report source</a>.{{ end }}
-                    </p>
-                </div>
-            </div>
-            
-            <div class="accordion-item">
                 <h3 class="accordion-title">{{ $ui.methodology.definitions_title }}</h3>
                 <div class="accordion-content">
                     <ul class="definitions-grid-list">
-                        {{ range $.Site.Data.traceability_framework.stages }}
+                        {{ range hugo.Data.traceability_framework.stages }}
                         <li>
                             <strong>{{ .full_name }}:</strong>
                             <span>{{ .definition }}</span>
