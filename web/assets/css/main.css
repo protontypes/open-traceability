@@ -1068,7 +1068,7 @@ footer {
 }
 
 /* ==========================================================================
-   Redesigned Evidence-Chain Assessment Styles (Typographic & Restrained)
+  Evidence-Chain Assessment Styles (Typographic & Restrained)
    ========================================================================== */
 
 /* 1. Assessment Hero Section */
@@ -2239,5 +2239,422 @@ footer {
     margin-top: 2px;
     max-width: 60px;
 }
+
+/* ==========================================================================
+   Evidence Bundle & Manifest View Styles
+   ========================================================================== */
+
+.view-selector-bar {
+    background: #fafcfd;
+    border-bottom: 1px solid var(--color-border);
+    padding: 16px 0;
+    position: sticky;
+    top: 73px; /* Right below the sticky header */
+    z-index: 999;
+}
+
+.view-selector-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.view-tab-btn {
+    background: none;
+    border: 1px solid transparent;
+    padding: 10px 20px;
+    font-family: var(--font-heading);
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.view-tab-btn:hover {
+    color: var(--color-black);
+    background: rgba(16, 22, 32, 0.03);
+}
+
+.view-tab-btn.active {
+    color: var(--color-primary);
+    background: #ffffff;
+    border-color: var(--color-border);
+    box-shadow: 0 4px 12px rgba(16, 22, 32, 0.04);
+}
+
+.view-pane {
+    display: none;
+}
+
+.view-pane.active {
+    display: block;
+}
+
+/* Evidence Bundle Container */
+.evidence-bundle-section {
+    background: #fafcfd;
+    padding: 60px 0 100px;
+}
+
+.evidence-bundle-container {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* Manifest Info Card */
+.manifest-info-card {
+    background: #ffffff;
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 4px 20px rgba(16, 22, 32, 0.02);
+}
+
+.manifest-info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+}
+
+.manifest-badge {
+    font-family: var(--font-heading);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.10em;
+    color: var(--color-primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.raw-manifest-link {
+    font-family: var(--font-heading);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.15s ease;
+}
+
+.raw-manifest-link:hover {
+    color: var(--color-primary);
+}
+
+.manifest-info-body {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 32px;
+}
+
+.claim-block h4, .namespace-block h4 {
+    font-family: var(--font-heading);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-secondary);
+    margin-bottom: 12px;
+}
+
+.claim-block blockquote {
+    font-family: var(--font-body);
+    font-size: 18px;
+    font-style: italic;
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--color-black);
+    border-left: 3px solid var(--color-primary);
+    padding-left: 16px;
+    margin-bottom: 12px;
+}
+
+.claim-url-link {
+    font-size: 13px;
+    color: var(--color-primary);
+    text-decoration: none;
+    word-break: break-all;
+}
+
+.claim-url-link:hover {
+    text-decoration: underline;
+}
+
+.namespace-details {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #fafcfd;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 14px;
+}
+
+.namespace-icon {
+    font-size: 18px;
+    color: var(--color-primary);
+}
+
+.namespace-url {
+    font-family: var(--font-heading);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-black);
+    text-decoration: none;
+    word-break: break-all;
+}
+
+.namespace-url:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+}
+
+/* Manifest Stages List */
+.manifest-stages-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.manifest-stage-card {
+    background: #ffffff;
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    display: flex;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(16, 22, 32, 0.02);
+}
+
+.stage-card-sidebar {
+    width: 64px;
+    background: #fafcfd;
+    border-right: 1px solid var(--color-border);
+    display: flex;
+    justify-content: center;
+    padding-top: 24px;
+    flex-shrink: 0;
+}
+
+.stage-num-badge {
+    font-family: var(--font-heading);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+    background: #ffffff;
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stage-card-content {
+    flex-grow: 1;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.stage-card-header {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.stage-short-badge {
+    font-family: var(--font-heading);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text-secondary);
+}
+
+.stage-card-header h3 {
+    font-size: 20px;
+    margin-bottom: 0;
+}
+
+.stage-definition {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    margin-bottom: 0;
+    line-height: 1.5;
+}
+
+.evidence-items-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.evidence-item-card {
+    display: flex;
+    gap: 16px;
+    background: #fafcfd;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 16px;
+    transition: all 0.2s ease;
+}
+
+.evidence-item-card:hover {
+    background: #ffffff;
+    border-color: rgba(37, 99, 235, 0.3);
+    box-shadow: 0 4px 12px rgba(16, 22, 32, 0.03);
+}
+
+.evidence-item-icon {
+    font-size: 20px;
+    color: var(--color-primary);
+    width: 40px;
+    height: 40px;
+    background: #ffffff;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.evidence-item-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.evidence-url {
+    font-family: var(--font-heading);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-black);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.15s ease;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.evidence-url-text {
+    display: inline-block;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.evidence-url:hover {
+    color: var(--color-primary);
+}
+
+.evidence-url i {
+    font-size: 10px;
+    color: var(--color-text-secondary);
+}
+
+.evidence-note {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    margin-bottom: 0;
+    line-height: 1.5;
+}
+
+.no-evidence-placeholder {
+    padding: 24px;
+    text-align: center;
+    border: 1px dashed var(--color-border);
+    border-radius: 12px;
+    color: var(--color-text-secondary);
+    font-size: 13px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.no-evidence-placeholder i {
+    font-size: 20px;
+    color: var(--color-text-secondary);
+    opacity: 0.5;
+}
+
+@media (max-width: 768px) {
+    .view-selector-bar {
+        position: static;
+    }
+    
+    .manifest-info-body {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+    
+    .manifest-stage-card {
+        flex-direction: column;
+    }
+    
+    .stage-card-sidebar {
+        width: 100%;
+        border-right: 0;
+        border-bottom: 1px solid var(--color-border);
+        padding: 16px;
+        justify-content: flex-start;
+    }
+    
+    .stage-card-content {
+        padding: 20px;
+    }
+
+    .evidence-items-list {
+        grid-template-columns: 1fr;
+    }
+
+    .evidence-item-card {
+    display: flex;
+    gap: 4px;
+    background: #fafcfd;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 4px;
+    transition: all 0.2s ease;
+}
+
+.evidence-item-icon {
+    font-size: 16px;
+    color: var(--color-primary);
+    width: 24px;
+    height: 24px;
+    background: #ffffff;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+}
+
 
 

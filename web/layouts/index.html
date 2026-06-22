@@ -100,14 +100,14 @@
 
 <!-- Exemplars -->
 {{ with hugo.Data.exemplars }}
-<section style="border-bottom: none;">
+<section style="border-bottom: none;" id="assessments">
     <div class="container">
         <div style="margin-bottom: 3rem;">
             <h2>{{ .title }}</h2>
             <p style="color: var(--color-text-secondary);">{{ .subtitle }}</p>
         </div>
         <div class="grid-3">
-            {{ range .items }}
+            {{ range first 3 .items }}
             <div class="card">
                 <h3>{{ .title }}</h3>
                 <p style="font-size: 13px; color: var(--color-text-secondary); margin-bottom: 1rem;">{{ .category }}</p>
@@ -123,39 +123,36 @@
 </section>
 {{ end }}
 
-<!-- Development Roadmap Section -->
+{{ with hugo.Data.remediation_roadmap.roadmap }}
 <section id="roadmap" class="section-alt" style="border-bottom: none;">
     <div class="container">
         <div style="margin-bottom: 3rem;">
-            <h2>Development Roadmap</h2>
-            <p style="color: var(--color-text-secondary);">Transitioning from pilot assessments to human-in-the-loop consensus review.</p>
+            <h2>{{ .title }}</h2>
+            <p style="color: var(--color-text-secondary);">{{ .subtitle }}</p>
         </div>
         
         <div class="grid-2" style="gap: 48px; align-items: start;">
             <div>
-                <h3>Prototype Framework and Methodology</h3>
-                <p style="margin-bottom: 1.25rem; line-height: 1.6;">
-                    The current Open Traceability scoring architecture is a prototype designed to test the feasibility of our six-dimension evidence chain framework. Assessments are currently generated via LLM-assisted analysis of repository structures and documentation <a href="https://github.com/protontypes/open-traceability-assessment" target="_blank">here</a>, rather than programmatic rulesets or comprehensive independent human verifications.
-                </p>
+                <h3>{{ .main.heading }}</h3>
+                <p style="margin-bottom: 1.25rem; line-height: 1.6;">{{ .main.description | safeHTML }}</p>
                 <p style="line-height: 1.6;">
-                    <strong>Demonstrated Pilot Objectives:</strong>
-                    Our pilot assessments of projects like PyPSA-Earth and Global Forest Watch have successfully shown that the six-dimension framework can structure complex codebase evidence, trace dependency layers, identify missing metadata, and map connections between inputs and published claims in a standardized format.
+                    <strong>{{ .main.objective_label }}</strong>
+                    {{ .main.objective_text }}
                 </p>
             </div>
             
             <div style="background: #ffffff; border: 1px solid var(--color-border); border-radius: 16px; padding: 32px;">
-                <h3 style="margin-top: 0; margin-bottom: 1rem;">Future Production Requirements</h3>
-                <p style="font-size: 14px; color: var(--color-text-secondary); line-height: 1.6; margin-bottom: 1.5rem;">
-                    To establish a high-integrity, production-grade assessment registry, the initiative requires a structured path beyond LLM-only generation:
-                </p>
+                <h3 style="margin-top: 0; margin-bottom: 1rem;">{{ .card.title }}</h3>
+                <p style="font-size: 14px; color: var(--color-text-secondary); line-height: 1.6; margin-bottom: 1.5rem;">{{ .card.description }}</p>
                 <ul style="padding-left: 1.25rem; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 12px; font-size: 14px; line-height: 1.5;">
-                    <li><strong>Standardized Scoring Rubric:</strong> Defining a versioned, multi-tier compliance framework with clear criteria for each of the six dimensions.</li>
-                    <li><strong>Human Review Protocol:</strong> Establishing formal peer-reviewer roles, service-level agreements (SLAs), and conflict-of-interest policies.</li>
-                    <li><strong>Automated Tooling at Scale:</strong> Building continuous integration infrastructure to automatically run checks and extract metadata across hundreds of active climate repositories.</li>
+                    {{ range .card.items }}
+                    <li><strong>{{ .label }}:</strong> {{ .text }}</li>
+                    {{ end }}
                 </ul>
             </div>
         </div>
     </div>
 </section>
+{{ end }}
 
 {{ end }}

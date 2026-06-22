@@ -3,6 +3,29 @@
 {{ $reportPath := .Params.report_path }}
 {{ $ui := hugo.Data.assessment_ui }}
 
+{{/* Retrieve and parse manifest if provided */}}
+{{ $manifest := dict }}
+{{ $hasManifest := false }}
+{{ $manifestSource := .Params.manifest_source }}
+{{ if $manifestSource }}
+  {{ if or (hasPrefix $manifestSource "http://") (hasPrefix $manifestSource "https://") }}
+    {{ with resources.GetRemote $manifestSource }}
+      {{ $manifest = unmarshal . }}
+      {{ $hasManifest = true }}
+    {{ else }}
+      {{ warnf "assessment %q could not fetch remote manifest_source=%q" $pagePath $manifestSource }}
+    {{ end }}
+  {{ else }}
+    {{ with readFile $manifestSource }}
+      {{ $manifest = unmarshal . }}
+      {{ $hasManifest = true }}
+    {{ else }}
+      {{ warnf "assessment %q could not read local manifest_source=%q" $pagePath $manifestSource }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+
 {{/* Determine if this page has an assessment report file */}}
 {{ $isAudited := false }}
 {{ $report := dict }}
@@ -149,6 +172,22 @@
     </div>
 </section>
 
+{{ if $hasManifest }}
+<div class="view-selector-bar">
+    <div class="container">
+        <div class="view-selector-buttons">
+            <button class="view-tab-btn active" data-target="audit-report-view">
+                <i class="fa-solid fa-chart-line"></i> Traceability Assessment
+            </button>
+            <button class="view-tab-btn" data-target="evidence-bundle-view">
+                <i class="fa-solid fa-box-open"></i> Manifesto
+            </button>
+        </div>
+    </div>
+</div>
+{{ end }}
+
+<div id="audit-report-view" class="view-pane active">
 {{/* Evidence Chain Flowchart Visualization */}}
 <section class="evidence-chain-viz-section">
     <div class="container">
@@ -545,6 +584,156 @@
         </div>
     </div>
 </section>
+</div>
+
+{{ if $hasManifest }}
+<div id="evidence-bundle-view" class="view-pane">
+    <section class="evidence-bundle-section">
+        <div class="container">
+            <div class="evidence-bundle-container">
+                <!-- Manifest Info Card -->
+                <div class="manifest-info-card">
+                    <div class="manifest-info-header">
+                        <div class="manifest-badge">
+                            <i class="fa-solid fa-file-code"></i> Curated Evidence Manifesto
+                        </div>
+                        <a href="{{ $manifestSource }}" target="_blank" class="raw-manifest-link">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Raw Manifesto (YAML)
+                        </a>
+                    </div>
+                    <div class="manifest-info-body">
+                        <div class="claim-block">
+                            <h4>Target Claim Stated by Namespace</h4>
+                            <blockquote>
+                                {{ $manifest.claim }}
+                            </blockquote>
+                            {{ with $manifest.claim_url }}
+                            <a href="{{ . }}" target="_blank" class="claim-url-link">
+                                <i class="fa-solid fa-link"></i> {{ . }}
+                            </a>
+                            {{ end }}
+                        </div>
+                        
+                        <div class="namespace-block">
+                            <h4>Verified Namespace</h4>
+                            <div class="namespace-details">
+                                <span class="namespace-icon"><i class="fa-solid fa-building-ngo"></i></span>
+                                <a href="{{ $manifest.namespace }}" target="_blank" class="namespace-url">
+                                    {{ $manifest.namespace }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stages Grid -->
+                <div class="manifest-stages-list">
+                    {{ $stagesData := hugo.Data.traceability_framework.stages }}
+                    {{ range $index, $stageDef := $stagesData }}
+                        {{ $stageNum := add $index 1 }}
+                        {{ $evidenceKey := "" }}
+                        {{ if eq $stageNum 1 }}{{ $evidenceKey = "open_data" }}
+                        {{ else if eq $stageNum 2 }}{{ $evidenceKey = "open_software" }}
+                        {{ else if eq $stageNum 3 }}{{ $evidenceKey = "open_execution" }}
+                        {{ else if eq $stageNum 4 }}{{ $evidenceKey = "open_community" }}
+                        {{ else if eq $stageNum 5 }}{{ $evidenceKey = "open_publications" }}
+                        {{ end }}
+                        
+                        {{ $evidenceItems := index $manifest $evidenceKey }}
+                        {{ if and (eq $stageNum 5) (not $evidenceItems) }}
+                            {{ $evidenceItems = index $manifest "open_access" }}
+                        {{ end }}
+                        
+                        {{/* For stage 6, the evidence item is the manifesto itself */}}
+                        {{ if eq $stageNum 6 }}
+                            {{ $evidenceItems = slice (dict "url" $manifestSource "note" "This Open Traceability manifesto acts as the versioned, machine-readable linkage artifact connecting all stages of the evidence chain.") }}
+                        {{ end }}
+                        
+                        <div class="manifest-stage-card">
+                            <div class="stage-card-sidebar">
+                                <div class="stage-num-badge">0{{ $stageNum }}</div>
+                            </div>
+                            <div class="stage-card-content">
+                                <div class="stage-card-header">
+                                    <span class="stage-short-badge">{{ $stageDef.short_name }}</span>
+                                    <h3>{{ $stageDef.full_name }}</h3>
+                                    <p class="stage-definition">{{ $stageDef.definition }}</p>
+                                </div>
+                                
+                                <div class="evidence-items-list">
+                                    {{ if gt (len $evidenceItems) 0 }}
+                                        {{ range $evidenceItems }}
+                                            <div class="evidence-item-card">
+                                                <div class="evidence-item-icon">
+                                                    {{ $url := .url }}
+                                                    {{ if in $url "github.com" }}
+                                                        <i class="fa-brands fa-github"></i>
+                                                    {{ else if in $url "bitbucket.org" }}
+                                                        <i class="fa-brands fa-bitbucket"></i>
+                                                    {{ else if in $url "readthedocs.io" }}
+                                                        <i class="fa-solid fa-book"></i>
+                                                    {{ else if or (in $url "zenodo.org") (in $url "doi.org") }}
+                                                        <i class="fa-solid fa-certificate"></i>
+                                                    {{ else if or (in $url "userguide") (in $url "documentation") (in $url "docs") }}
+                                                        <i class="fa-solid fa-file-lines"></i>
+                                                    {{ else if or (in $url "forum") (in $url "community") }}
+                                                        <i class="fa-solid fa-comments"></i>
+                                                    {{ else }}
+                                                        <i class="fa-solid fa-globe"></i>
+                                                    {{ end }}
+                                                </div>
+                                                <div class="evidence-item-details">
+                                                    <a href="{{ .url }}" target="_blank" class="evidence-url">
+                                                        <span class="evidence-url-text">{{ .url | truncate 30 }}</span>
+                                                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                                    </a>
+                                                    {{ with .note }}
+                                                    <p class="evidence-note">{{ . }}</p>
+                                                    {{ end }}
+                                                </div>
+                                            </div>
+                                        {{ end }}
+                                    {{ else }}
+                                        <div class="no-evidence-placeholder">
+                                            <i class="fa-solid fa-ban"></i> No explicit evidence links provided for this stage.
+                                        </div>
+                                    {{ end }}
+                                </div>
+                            </div>
+                        </div>
+                    {{ end }}
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const tabs = document.querySelectorAll('.view-tab-btn');
+        const panes = document.querySelectorAll('.view-pane');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const target = this.getAttribute('data-target');
+                
+                // Update active tab
+                tabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update active pane
+                panes.forEach(p => {
+                    if (p.id === target) {
+                        p.classList.add('active');
+                    } else {
+                        p.classList.remove('active');
+                    }
+                });
+            });
+        });
+    });
+</script>
+{{ end }}
 
 {{ else }}
   {{/* ======================================================================

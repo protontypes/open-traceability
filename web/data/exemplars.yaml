@@ -1,6 +1,10 @@
 title: "Exemplars"
 subtitle: "Concrete examples of strong traceability in practice."
 items:
+  - title: "InVEST"
+    category: "Ecosystem Services"
+    description: "Integrated Valuation of Ecosystem Services and Tradeoffs (InVEST) models map and value ecosystem services to support environmental decision-making."
+    url: "/assessments/invest"
   - title: "PyPSA-Earth"
     category: "Energy System Optimisation"
     description: "A global benchmark for transparent power-sector planning with open-source models and data workflows."
@@ -13,4 +17,5 @@ items:
     category: "Forest Monitoring"
     description: "Real-time monitoring of tree-cover loss powered by open APIs and verifiable satellite data layers."
     url: "/assessments/global-forest-watch"
+
 

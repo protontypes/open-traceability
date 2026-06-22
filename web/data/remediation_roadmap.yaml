@@ -32,3 +32,25 @@ phases:
         description: "Create persistent, immutable archives of the full execution outputs."
       - title: "Build claims-to-evidence provenance graphs"
         description: "Establish a machine-readable map of the end-to-end evidence trail."
+
+roadmap:
+  title: "Development Roadmap"
+  subtitle: "Transitioning from pilot assessments to human-in-the-loop consensus review."
+  main:
+    heading: "Prototype Framework and Methodology"
+    description: |
+      The current Open Traceability scoring architecture is a prototype designed to test the feasibility of our six-dimension evidence chain framework. Assessments are currently generated via LLM-assisted analysis of repository structures and documentation <a href="https://github.com/protontypes/open-traceability-assessment" target="_blank">here</a>, rather than programmatic rulesets or comprehensive independent human verifications.
+    objective_label: "Demonstrated Pilot Objectives:"
+    objective_text: |
+      Our pilot assessments of projects like InVEST, PyPSA-Earth and PyPSA-Eur have successfully shown that the six-dimension framework can structure complex codebase evidence, trace dependency layers, identify missing metadata, and map connections between inputs and published claims in a standardized format.
+  card:
+    title: "Future Production Requirements"
+    description: |
+      To establish a high-integrity, production-grade assessment registry, the initiative requires a structured path beyond LLM-only generation:
+    items:
+      - label: "Standardized Scoring Rubric"
+        text: "Defining a versioned, multi-tier compliance framework with clear criteria for each of the six dimensions."
+      - label: "Human Review Protocol"
+        text: "Establishing formal peer-reviewer roles, service-level agreements (SLAs), and conflict-of-interest policies."
+      - label: "Automated Tooling at Scale"
+        text: "Building continuous integration infrastructure to automatically run checks and extract metadata across hundreds of active climate repositories."
